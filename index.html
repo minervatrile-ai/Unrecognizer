@@ -3,11 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UNRECOGNIZER</title>
+
+  <title>UNRECOGNIZER.COM</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #000000;
+      color: #ff5a00;
+      font-family: "Courier New", Courier, monospace;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 40px 24px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 850px;
+    }
+
+    h1 {
+      margin: 0 0 18px 0;
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-shadow:
+        0 0 6px #ff5a00,
+        0 0 18px rgba(255, 90, 0, 0.55);
+    }
+
+    .status {
+      margin: 0 0 70px 0;
+      color: #bdbdbd;
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .subspace {
+      border-left: 2px solid #ff5a00;
+      padding-left: 22px;
+    }
+
+    .label {
+      color: #777777;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .subspace a {
+      color: #ff5a00;
+      font-size: clamp(1.2rem, 3vw, 1.7rem);
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+
+    .subspace a:hover,
+    .subspace a:focus {
+      color: #ffffff;
+      text-shadow:
+        0 0 8px #ff5a00,
+        0 0 20px #ff5a00;
+    }
+
+    .description {
+      margin-top: 12px;
+      max-width: 600px;
+      color: #999999;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>UNRECOGNIZER</h1>
-  <p>Something is happening here.</p>
+
+  <main>
+
+    <h1>UNRECOGNIZER.COM</h1>
+
+    <p class="status">
+      Content coming soon.
+    </p>
+
+    <section class="subspace">
+
+      <div class="label">
+        Active Sub-Space
+      </div>
+
+      <a href="/ipt/">
+        IDENTITY PANIC TOOLKIT →
+      </a>
+
+      <p class="description">
+        Awareness tools focused on understanding how humans react under identity pressure.
+      </p>
+
+    </section>
+
+  </main>
+
 </body>
 </html>
