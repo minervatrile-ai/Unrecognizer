@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hellhound: Maintenance Technician [Level 0]</title>
+
+<style>
+/* ==========================
+   PAGE / GAME AREA
+========================== */
+
+body {
+  background: black;
+  color: lime;
+  font-family: monospace;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+#message {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  background: black;
+  border: 2px solid lime;
+
+  margin: 10px auto;
+  padding: 10px;
+
+  font-size: 20px;
+}
+
+.popup {
+  grid-column: 1 / -1;
+  border: 2px solid lime;
+  background: black;
+  padding: 20px;
+}
+
+.popup img {
+  width: 192px;
+  height: 192px;
+  image-rendering: pixelated;
+}
+
+.popup button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-family: monospace;
+}
+
+#maze {
+  display: grid;
+  grid-template-columns: repeat(11, 64px);
+  grid-auto-rows: 64px;
+  gap: 0;
+
+  width: max-content;
+  margin: 20px auto;
+}
+
+.tile {
+  width: 64px;
+  height: 64px;
+  background-size:cover;
+  background-position:center;
+  image-rendering: pixelated;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0,0,0,0.7);
+
+  z-index: 999;
+}
+
+#inventoryPanel {
+  position: fixed;
+  right: 20px;
+  top: 150px;
+
+  background: black;
+  color: lime;
+
+  border: 2px solid lime;
+  padding: 12px;
+
+  z-index: 1000;
+}
+
+#inventoryButton {
+  position: fixed;
+  right: 20px;
+  top: 100px;
+
+  z-index: 1001;
+}
+
+#inventoryItems div {
+  margin: 6px 0;
+}
+
+#moraleBox {
+  width: 300px;
+  margin: 10px auto;
+  font-size: 18px;
+}
+
+#moraleBar {
+  width: 100%;
+  height: 24px;
+  border: 2px solid lime;
+  background: black;
+}
+
+#moraleFill {
+  width: 100%;
+  height: 100%;
+  background: lime;
+}
+/* ==========================
+   MOBILE CONTROLS
+========================== */
+
+.mobile-controls {
+  display: none;
+}
+
+.mobile-controls button {
+  width: 120px;
+  height: 120px;
+  font-size: 48px;
+}
+
+@media (max-width: 768px) {
+  .mobile-controls {
+    display: grid;
+    grid-template-columns: 120px 120px 120px;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Hellhound: Maintenance Technician [Level 0, in development]</h1>
+
+<div id="message">
+You're Hellhound, Maintenance Technician, and this is where you woke up... Hellhound: 'Awww, maaaan... Where the heck am I? This isn't where I went to sleep at!'
+</div>
+
+<div id="maze"></div>
+
+<div id="overlay"></div>
+
+<div class="mobile-controls">
+  <div></div>
+  <button onclick="movePlayer(0, -1)">▲</button>
+  <div></div>
+
+  <button onclick="movePlayer(-1, 0)">◀</button>
+  <button onclick="squirtStream()">💦</button>
+  <button onclick="movePlayer(1, 0)">▶</button>
+
+  <div></div>
+  <button onclick="movePlayer(0, 1)">▼</button>
+  <div></div>
+</div>
+
+<button id="inventoryButton"
+        onclick="toggleInventory()">
+🎒 Inventory
+</button>
+
+<div id="inventoryPanel" style="display:none;">
+  <h3>HELLHOUND EQUIPMENT</h3>
+
+  <div id="inventoryItems"></div>
+
+  <button onclick="toggleInventory()">Close</button>
+</div>
+
+<div id="moraleBox">
+  Hellhound Morale:
+  <div id="moraleBar">
+    <div id="moraleFill"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================
+   TILE LEGEND
+
+   # = wall
+     = floor
+   P = player start
+
+   A = door A
+   a = key A
+
+   B = door B
+   b = key B
+
+   O = fire A
+   F = fire B
+
+   E = fire extinguisher
+   Q = Level 2 disk
+   C = computer
+   U = desk
+
+   R = radio object
+   radioState 1 = radio off
+   radioState 2 = radio good
+   radioState 3 = radio bad
+
+   r = radio cassette tape
+========================== */
+
+const TILE = {
+
+  REVOLVER: "x",
+  SQUIRT_GUN: "^",
+  WATER_STREAM: "~",
+  ROOM_EXIT_DOWN: "d",  
+  TELEPORTER_1: "p",
+  TELEPORTER_2: "q",
+  
+  WALL: "#",
+  FLOOR: " ",
+  PLAYER_START: "P",
+  VICTORY_DISPLAY: "v",
+  BLUE_WALL: ".",
+  RADIO: "R",
+  RADIO_GOOD: "2",
+  RADIO_BAD: "3",
+  RADIO_OFF: "1",
+  CASSETTE_TAPE: "r",
+  RAT_1_RIGHT: "(",
+
+  DOOR_A: "A",
+  KEY_A: "a",
+
+  DOOR_B: "B",
+  KEY_B: "b",
+
+  DOOR_C: "H",
+  KEY_C: "h",
+
+  DOOR_D: "5",
+  KEY_D: "4",
+
+  FIRE_A: "O",
+  FIRE_B: "F",
+
+  EXTINGUISHER2: "e",
+  EXTINGUISHER: "E",
+  LEVEL_2_DISK: "Q",
+  COMPUTER: "C",
+  DESK: "U",
+
+  MEDICINE_DOG: "M",
+  ROUTER: "%",
+  BREAKER: "X",
+  COUCH_LEFT: "7",
+  COUCH_MIDDLE: "8",
+  COUCH_RIGHT: "9",
+  PHONY_WALL: "Z",
+  VENT_ENTRANCE: "V",
+  LADDER: "L",
+  PAGER: "@",
+  PAGE_TRIGGER: "!",
+  PAGE_TRIGGER_2: "&",
+  PAGE_TRIGGER_3: "$",
+  PAGER_DEPLETED: "0",
+  SPECIAL_VENT: "S",
+  SPECIAL_VENT_2: "s",
+  SKULL_INFLUENCER: "I",
+  FLASHLIGHT: "f",
+  VENDING_MACHINE: "*",
+  RAT_ONLY_VENT: "-"
+};
+
+/* ==========================
+   GAME MAP
+========================== */
+
+const room1 = [
+  "###########",
+  "#PCOFFF!  V",
+  "#OU#FRF####",
+  "# ## #    #",
+  "#    # #  #",
+  "###B## #  #",
+  "#   #  ####",
+  "#L  #    X#",
+  "## ##  #  #",
+  "#E #r  # b#",
+  "#####d#####"
+];
+
+const room2 = [
+  "#####d#####",
+  "#^  #     #",
+  "### # ### #",
+  "#   #e  ###",
+  "# ##### #&p",
+  "#       #5#",
+  "# ### ### #",
+  "#  h#    0#",
+  "# # ###   #",
+  "# #       #",
+  "###########"
+];
+
+const room3 = [
+  "###########",
+  "V  @     $#",
+  "# #### ## #",
+  "#4#     # #",
+  "#####H#####",
+  "#    f#   #",
+  "####### ###",
+  "#    A  M&#",
+  "#C  #######",
+  "#U&Q    & Z",
+  "######q####"
+];
+
+const room4 = [
+  "######q####",
+  "#* *  $#  #",
+  "#     #   #",
+  "#     #   #",
+  "p     #   #",
+  "#     #   #",
+  "#     ###*#",
+  "#     789a#",
+  "#  %      #",
+  "#*d   $   #",
+  "#####S#####"
+];
+
+const room5 = [
+  ".....S.....",
+  "..... .....",
+  "..... .....",
+  "-         -",
+  "..... .....",
+  "-         -",
+  "..... .....",
+  "..... .....",
+  ".....-.....",
+  "...........",
+  "..........."
+];
+
+let maze = room1;
+
+/* ==========================
+   PLAYER POSITION
+========================== */
+
+let playerX = 1;
+let playerY = 1;
+
+
+/* ==========================
+   GAME STATE
+========================== */
+let hellhoundMorale = 100;
+let inventoryOpen = false;
+
+let hasRevolver = false;
+let hasSquirtGun = false;
+let skullFrozen = false;
+let foundCouch = false;
+let searchedCouch = false;
+let hasDollar = false;
+let hasPagerBattery = false;
+
+let hasFlashlight = false;
+let facingDirection = "down";
+
+let streamActive = false;
+let streamX = 0;
+let streamY = 0;
+let streamDX = 0;
+let streamDY = 0;
+
+let hasKeyA = false;
+let hasKeyB = false;
+
+let hasKeyC = false;
+let hasKeyD = false;
+
+let doorDOpen = false;
+let doorCOpen = false;
+let doorAOpen = false;
+let doorBOpen = false;
+
+let hasExtinguisher = false;
+let hasExtinguisher2 = false;
+
+let fireAOut = true;
+let fireBOut = true;
+
+let hasLevel2Disk = false;
+let computerActivated = false;
+
+let radioState = 1;
+let hasTapeR = false;
+
+let viewingRadio = false;
+let wallVanish = false;
+
+let hasMedicineDog = false;
+let hasLadder = false;
+
+let hasPager = false;
+let viewingPager = false;
+let pagerBatteryTrapUsed = false;
+let pagerPickedUp = false;
+
+let gotPage1 = false;
+let gotPage2 = false;
+let gotPage3 = false;
+
+let skullX = 8;
+let skullY = 9;
+
+let ratSeen = false;
+let ratScurrying = false;
+let ratX = -1;
+let ratY = -1;
+let ratStep = 0;
+
+const ratPath = [
+  { x: 1, y: 3 },
+  { x: 2, y: 3 },
+  { x: 3, y: 3 },
+  { x: 4, y: 3 },
+  { x: 5, y: 3 },
+  { x: 6, y: 3 },
+  { x: 7, y: 3 },
+  { x: 8, y: 3 },
+  { x: 9, y: 3 },
+  { x: 10, y: 3 },
+
+  { x: 1, y: 5 },
+  { x: 2, y: 5 },
+  { x: 3, y: 5 },
+  { x: 4, y: 5 },
+  { x: 5, y: 5 },
+  { x: 6, y: 5 },
+  { x: 7, y: 5 },
+  { x: 8, y: 5 },
+  { x: 9, y: 5 },
+  { x: 10, y: 5 }
+
+
+];
+
+/* ==========================
+   TILE IMAGES
+========================== */
+
+const tileImages = {
+  [TILE.PLAYER_WATERGUN]: "../0-game-gallery/0player-watergun.png",
+  [TILE.RAT_ONLY_VENT]: "../0-game-gallery/1-vent-entrance.png",
+  [TILE.RAT_1_RIGHT]: "../0-game-gallery/rat-1-right.png",
+  [TILE.REVOLVER]: "../0-game-gallery/revolver.png",
+  [TILE.SQUIRT_GUN]: "../0-game-gallery/squirt-gun.png",
+  [TILE.WATER_STREAM]: "../0-game-gallery/water-stream.png",
+  [TILE.ROUTER]: "../0-game-gallery/router.png",
+  [TILE.BLUE_WALL]: "../0-game-gallery/0-wall.png",
+  [TILE.WALL]: "../0-game-gallery/0-wall2.png",
+  [TILE.FLOOR]: "../0-game-gallery/0-floor2.png",
+  [TILE.PAGER]: "../0-game-gallery/pager.png",
+  [TILE.PAGE_TRIGGER]: "../0-game-gallery/0-floor.png",
+  [TILE.PAGE_TRIGGER_2]: "../0-game-gallery/0-floor.png",
+  [TILE.PAGE_TRIGGER_3]: "../0-game-gallery/0-floor.png",
+  [TILE.SKULL_INFLUENCER]: "../0-game-gallery/skull-influencer.png",
+  [TILE.ROOM_EXIT_DOWN]: "../0-game-gallery/0-floor.png",
+  [TILE.TELEPORTER_1]: "../0-game-gallery/0-floor.png",
+  [TILE.TELEPORTER_2]: "../0-game-gallery/0-floor.png",
+  [TILE.PAGER_DEPLETED]: "../0-game-gallery/0-floor2.png",
+  [TILE.COUCH_LEFT]: "../0-game-gallery/couch-left.png",
+  [TILE.COUCH_MIDDLE]: "../0-game-gallery/couch-middle.png",
+  [TILE.COUCH_RIGHT]: "../0-game-gallery/couch-right.png",
+  [TILE.PHONY_WALL]: "../0-game-gallery/exit.png",
+  [TILE.SPECIAL_VENT]: "../0-game-gallery/1-vent-entrance.png",
+  [TILE.SPECIAL_VENT_2]: "../0-game-gallery/1-vent-entrance.png",
+  [TILE.VENT_ENTRANCE]: "../0-game-gallery/1-vent-entrance.png",
+  [TILE.LADDER]: "../0-game-gallery/1-ladder.png",
+
+  [TILE.PLAYER_START]: "../0-game-gallery/0player.png",
+
+  [TILE.DOOR_A]: "../0-game-gallery/1-door.png",
+  [TILE.DOOR_B]: "../0-game-gallery/1-door.png",
+  [TILE.DOOR_C]: "../0-game-gallery/1-door.png",
+  [TILE.DOOR_D]: "../0-game-gallery/1-door.png",
+
+  [TILE.KEY_D]: "../0-game-gallery/1-key.png",
+  [TILE.KEY_C]: "../0-game-gallery/1-key.png",
+  [TILE.KEY_A]: "../0-game-gallery/1-key.png",
+  [TILE.KEY_B]: "../0-game-gallery/1-key.png",
+
+  [TILE.FIRE_A]: "../0-game-gallery/2-fire.png",
+  [TILE.FIRE_B]: "../0-game-gallery/2-fire.png",
+
+  [TILE.EXTINGUISHER2]: "../0-game-gallery/2-extinguisher.png",
+  [TILE.EXTINGUISHER]: "../0-game-gallery/2-extinguisher.png",
+  [TILE.LEVEL_2_DISK]: "../0-game-gallery/2-floppy.png",
+  [TILE.MEDICINE_DOG]: "../0-game-gallery/2-floppy.png",
+  [TILE.DESK]: "../0-game-gallery/3-desk.png",
+  [TILE.COMPUTER]: "../0-game-gallery/2-computer.png",
+
+  [TILE.RADIO_OFF]: "../0-game-gallery/2-radio-off.png",
+  [TILE.RADIO_GOOD]: "../0-game-gallery/2-radio-good.png",
+  [TILE.RADIO_BAD]: "../0-game-gallery/2-radio-bad.png",
+  [TILE.CASSETTE_TAPE]: "../0-game-gallery/2-cassette.png",
+
+  [TILE.BREAKER]: "../0-game-gallery/4-breaker-box.png",
+  [TILE.FLASHLIGHT]: "../0-game-gallery/flashlight.png",
+  [TILE.VENDING_MACHINE]: "../0-game-gallery/vending-machine.png"
+};
+
+/* ==========================
+   SMALL HELPERS
+========================== */
+function startRatScurry() {
+  if (ratSeen) return;
+
+  ratSeen = true;
+  ratScurrying = true;
+  ratStep = 0;
+
+  function moveRat() {
+    if (ratStep >= ratPath.length) {
+      ratScurrying = false;
+      ratX = -1;
+      ratY = -1;
+      drawMaze();
+      return;
+    }
+
+    ratX = ratPath[ratStep].x;
+    ratY = ratPath[ratStep].y;
+    ratStep++;
+
+    drawMaze();
+
+    setTimeout(moveRat, 170);
+  }
+
+  moveRat();
+}
+
+
+
+function isDarkRoom() {
+  return maze === room4; // change to your dark room
+}
+
+function isLitByFlashlight(x, y) {
+  if (facingDirection === "right") return y === playerY && x > playerX && x <= playerX + 2;
+  if (facingDirection === "left") return y === playerY && x < playerX && x >= playerX - 2;
+  if (facingDirection === "down") return x === playerX && y > playerY && y <= playerY + 2;
+  if (facingDirection === "up") return x === playerX && y < playerY && y >= playerY - 2;
+
+  return false;
+}
+
+function isVisible(x, y) {
+  if (!isDarkRoom()) return true;
+
+  const tile = getMapTile(x, y);
+
+  if (
+    tile === TILE.ROUTER ||
+    tile === TILE.VENDING_MACHINE
+  ) {
+    return true;
+  }
+
+  if (!hasFlashlight) return false;
+
+  return isLitByFlashlight(x, y);
+}
+
+function toggleInventory() {
+
+  inventoryOpen = !inventoryOpen;
+
+  const panel = document.getElementById("inventoryPanel");
+
+  if (inventoryOpen) {
+    panel.style.display = "block";
+    drawInventory();
+  } else {
+    panel.style.display = "none";
+  }
+}
+
+function drawInventory() {
+  let items = "";
+
+  if (hasRevolver) items += "<div> Revolver</div>";
+  if (hasSquirtGun) items += "<div>🔫 Squirt Gun</div>";
+  if (hasPagerBattery)
+  items += "<div>🔋 Pager Battery</div>";
+  if (hasDollar) items += "<div>💵 A Few Dollars</div>";
+  if (hasExtinguisher) items += "<div>🧯 Extinguisher</div>";
+  if (hasExtinguisher2)
+  items += "<div>🧯 Backup Extinguisher</div>";
+  if (hasPager) items += "<div>📟 Pager</div>";
+  if (hasLadder) items += "<div>🪜 Ladder</div>";
+  if (hasLevel2Disk) items += "<div>💾 Weird Wizard Apartment Disk</div>";
+  if (hasMedicineDog) items += "<div>💾 Medicine Dog Disk</div>";
+  if (hasKeyA) items += "<div>🗝️ Key A</div>";
+  if (hasKeyB) items += "<div>🗝️ Key B</div>";
+  if (hasKeyC) items += "<div>🗝️ Key C</div>";
+  if (hasKeyD) items += "<div>🗝️ Key D</div>";
+  
+  if (hasTapeR) items += "<div>📼 Cassette Tape</div>";
+
+  if (items === "") items = "No equipment yet.";
+
+  document.getElementById("inventoryItems").innerHTML = items;
+}
+
+function setMessage(text) {
+  document.getElementById("message").innerText = text;
+}
+
+function getMapTile(x, y) {
+  return maze[y][x];
+}
+
+/*
+  This decides what each map cell should LOOK like
+  after the game state has changed.
+*/
+function getVisibleTile(cell) {
+  if (cell === TILE.PLAYER_START) return TILE.FLOOR;
+  if (cell === TILE.LADDER && hasLadder) return TILE.FLOOR;
+  if (cell === TILE.KEY_A && hasKeyA) return TILE.FLOOR;
+  if (cell === TILE.KEY_B && hasKeyB) return TILE.FLOOR;
+  if (cell === TILE.KEY_C && hasKeyC) return TILE.FLOOR;
+  if (cell === TILE.KEY_D && hasKeyD) return TILE.FLOOR;
+
+  if (cell === TILE.SQUIRT_GUN && hasSquirtGun) return TILE.FLOOR;
+  if (cell === TILE.REVOLVER && hasRevolver) return TILE.FLOOR;
+  if (cell === TILE.DOOR_D && doorDOpen) return TILE.FLOOR;
+  if (cell === TILE.DOOR_A && doorAOpen) return TILE.FLOOR;
+  if (cell === TILE.DOOR_B && doorBOpen) return TILE.FLOOR;
+  if (cell === TILE.DOOR_C && doorCOpen) return TILE.FLOOR;
+  if (cell === TILE.FIRE_A && fireAOut) return TILE.FLOOR;
+  if (cell === TILE.FIRE_B && fireBOut) return TILE.FLOOR;
+
+  if (cell === TILE.PAGER && pagerPickedUp) return TILE.FLOOR;
+
+  if (cell === TILE.EXTINGUISHER2 && hasExtinguisher2) return TILE.FLOOR;
+  if (cell === TILE.EXTINGUISHER && hasExtinguisher) return TILE.FLOOR;
+  if (cell === TILE.LEVEL_2_DISK && hasLevel2Disk) return TILE.FLOOR;
+  if (cell === TILE.MEDICINE_DOG && hasMedicineDog) return TILE.FLOOR;
+  if (cell === TILE.CASSETTE_TAPE && hasTapeR) return TILE.FLOOR;
+  if (cell === TILE.PHONY_WALL && wallVanish) return TILE.FLOOR;
+  if (cell === TILE.LADDER && hasLadder) return TILE.FLOOR;
+if (cell === TILE.RADIO) {
+  if (radioState === 1) return TILE.RADIO_OFF;
+  if (radioState === 2) return TILE.RADIO_GOOD;
+  if (radioState === 3) return TILE.RADIO_BAD;
+}
+
+  return cell;
+
+}
+
+/* ==========================
+   DRAW MAZE
+========================== */
+
+function drawMaze() {
+  const mazeDiv = document.getElementById("maze");
+  mazeDiv.innerHTML = "";
+
+  for (let y = 0; y < maze.length; y++) {
+    for (let x = 0; x < maze[y].length; x++) {
+      let cell = getVisibleTile(getMapTile(x, y));
+
+     if (x === playerX && y === playerY) {
+  if (hasSquirtGun) {
+    cell = TILE.PLAYER_WATERGUN;
+  } else {
+    cell = TILE.PLAYER_START;
+  }
+}
+
+      if (x === skullX && y === skullY) {
+        cell = TILE.SKULL_INFLUENCER;
+      }
+
+if (ratScurrying && x === ratX && y === ratY) {
+  cell = TILE.RAT_1_RIGHT;
+}
+
+if (streamActive && x === streamX && y === streamY) {
+  cell = TILE.WATER_STREAM;
+}
+
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      if (!isVisible(x, y)) {
+  tile.style.backgroundColor = "black";
+  tile.style.backgroundImage = "none";
+} else {
+  tile.style.backgroundColor = "";
+  tile.style.backgroundImage = `url(${tileImages[cell]})`;
+}
+
+      mazeDiv.appendChild(tile);
+    }
+  }
+}
+
+function moveSkullInfluencer() {
+  if (skullFrozen) {
+    return;
+  }
+
+  const directions = [
+    { x: 0, y: -1 },
+    { x: 0, y: 1 },
+    { x: -1, y: 0 },
+    { x: 1, y: 0 }
+  ];
+
+  const choice = directions[Math.floor(Math.random() * directions.length)];
+
+  const nextX = skullX + choice.x;
+  const nextY = skullY + choice.y;
+
+  if (maze[nextY][nextX] !== "#") {
+    skullX = nextX;
+    skullY = nextY;
+  }
+
+  if (playerX === skullX && playerY === skullY) {
+  damageMorale();
+  return;
+}
+
+  drawMaze();
+}
+
+function damageMorale() {
+  hellhoundMorale -= 25;
+
+  if (hellhoundMorale < 0) {
+    hellhoundMorale = 0;
+  }
+
+  document.getElementById("moraleFill").style.width =
+    hellhoundMorale + "%";
+
+  setMessage("The Skull Influencer corners you!");
+
+  if (hellhoundMorale === 0) {
+    setMessage(
+      "Hellhound loses morale and is now more focused on just being thirsty."
+    );
+
+    // optional later:
+    // restart level
+    // game over screen
+    // teleport to start
+  }
+}
+
+function squirtStream() {
+
+  if (!hasSquirtGun) {
+    setMessage("Hellhound has nothing to fire.");
+    return;
+}
+
+  if (streamActive) return;
+
+  streamX = playerX;
+  streamY = playerY;
+
+  if (facingDirection === "right") {
+    streamDX = 1;
+    streamDY = 0;
+  }
+
+  if (facingDirection === "left") {
+    streamDX = -1;
+    streamDY = 0;
+  }
+
+  if (facingDirection === "down") {
+    streamDX = 0;
+    streamDY = 1;
+  }
+
+  if (facingDirection === "up") {
+    streamDX = 0;
+    streamDY = -1;
+  }
+
+  streamActive = true;
+}
+
+function moveStream() {
+  if (!streamActive) return;
+
+  const nextX = streamX + streamDX;
+  const nextY = streamY + streamDY;
+
+  if (
+    nextY < 0 ||
+    nextY >= maze.length ||
+    nextX < 0 ||
+    nextX >= maze[nextY].length
+  ) {
+    streamActive = false;
+    drawMaze();
+    return;
+  }
+
+
+
+  const nextTile = getMapTile(nextX, nextY);
+
+    if (nextTile === TILE.ROUTER) {
+
+  streamActive = false;
+
+  skullFrozen = true;
+
+  setMessage(
+    "The RETRO-TECH LAN ROUTER sparks and crackles. The Skull Influencer freezes."
+  );
+
+  drawMaze();
+  return;
+}
+
+
+
+  streamX = nextX;
+  streamY = nextY;
+
+  if (streamX === skullX && streamY === skullY) {
+    streamActive = false;
+    setMessage("Hellhound sprays the Skull Influencer!");
+    skullX = 8;
+    skullY = 9;
+    drawMaze();
+    return;
+  }
+
+  drawMaze();
+}
+
+setInterval(moveStream, 120);
+
+
+
+
+/* ==========================
+   INTERACTION LOGIC
+========================== */
+
+function movePlayer(dx, dy) {
+
+if (dx === 1) facingDirection = "right";
+if (dx === -1) facingDirection = "left";
+if (dy === 1) facingDirection = "down";
+if (dy === -1) facingDirection = "up";
+
+  const nextX = playerX + dx;
+  const nextY = playerY + dy;
+
+  const nextTile = getMapTile(nextX, nextY);
+
+  /* ---- Hard blockers ---- */
+
+if (
+  nextTile === TILE.WALL ||
+  nextTile === TILE.BLUE_WALL
+) {
+  setMessage("A wall blocks your path.");
+  return;
+}
+
+  if (nextTile === TILE.PHONY_WALL && !wallVanish) {
+    setMessage("This must be the way out. But it's LOCKED.");
+    return;
+    
+  }
+  if (nextTile === TILE.PHONY_WALL && wallVanish) {
+  setMessage("The EXIT DOOR unlocks. Hellhound escapes Level 0. Stay tuned!");
+
+  setTimeout(function() {
+    window.location.href = "https://identitypanictoolkit.com";
+  }, 2500);
+
+  return;
+}
+
+  if (nextTile === TILE.ROUTER) {
+  setMessage(
+    "RETRO-TECH LAN ROUTER\n\nStatus: Operational"
+  );
+  return;
+}
+
+  if (nextTile === TILE.DESK) {
+    setMessage("Can't walk here. There's a desk in the way...");
+    return;
+  }
+
+  if (
+  nextTile === TILE.COMPUTER &&
+  radioState !== 2
+) {
+  setMessage("Computer has no power...");
+  return;
+}
+
+if (
+  nextTile === TILE.COMPUTER &&
+  !hasLevel2Disk &&
+  !hasMedicineDog 
+) {
+  setMessage("No disk to read...");
+  return;
+}
+
+  /* ---- Locked doors ---- */
+
+  if (nextTile === TILE.DOOR_A && !hasKeyA) {
+    setMessage("Door A is locked.");
+    return;
+  }
+
+  if (nextTile === TILE.DOOR_B && !hasKeyB) {
+    setMessage("Door B is locked.");
+    return;
+  }
+
+  if (nextTile === TILE.DOOR_C && !hasKeyC) {
+    setMessage("Door C is locked.");
+    return;
+  }
+
+  if (nextTile === TILE.DOOR_D && !hasKeyD) {
+    setMessage("Door D is locked.");
+    return;
+  }
+
+  /* ---- Dangerous fires ---- */
+
+ if (nextTile === TILE.FIRE_A &&
+    !fireAOut &&
+    !hasExtinguisher &&
+    !hasExtinguisher2) {
+
+    setMessage("Ouch! Fire is burning hot!");
+    return;
+}
+
+if (nextTile === TILE.FIRE_B &&
+    !fireBOut &&
+    !hasExtinguisher &&
+    !hasExtinguisher2) {
+
+    setMessage("Too hot! You need a fire extinguisher.");
+    return;
+}
+
+  /* ---- Door success states ---- */
+
+  if (nextTile === TILE.DOOR_C && hasKeyC) {
+    doorCOpen = true;
+    setMessage("Key C turns. Door C opens.");
+  }
+
+  if (nextTile === TILE.VENDING_MACHINE && hasDollar) {
+    hellhoundMorale = 100;
+
+      document.getElementById("moraleFill").style.width =
+      hellhoundMorale + "%";
+
+    setMessage(
+  "A RETRO-COLA clunks into the tray. Hellhound's morale is restored."
+);
+  return;
+  }
+
+  if (nextTile === TILE.VENDING_MACHINE && !hasDollar) {
+    setMessage("RETRO-COLA VENDING UNIT\n\nSoda: $1.00");
+    return;
+  }
+
+  if (nextTile === TILE.DOOR_A && hasKeyA) {
+    doorAOpen = true;
+    setMessage("Key A turns. Door A opens.");
+  }
+
+  if (nextTile === TILE.DOOR_B && hasKeyB) {
+    doorBOpen = true;
+    setMessage("Key B turns. Door B opens.");
+  }
+
+  if (nextTile === TILE.DOOR_D && hasKeyD) {
+    doorDOpen = true;
+    setMessage("Key D turns. Door D opens.");
+  }
+
+  /* ---- Fire success states ---- */
+
+  if (nextTile === TILE.FIRE_A && hasExtinguisher) {
+    fireAOut = true;
+    setMessage("You sweep the fire with blasts of foam... It went out!");
+  }
+
+  if (nextTile === TILE.FIRE_B && hasExtinguisher) {
+    fireBOut = true;
+    setMessage("Fffssssshhhh! You put out the fire.");
+  }
+
+  if (nextTile === TILE.FIRE_A && hasExtinguisher2) {
+    fireAOut = true;
+    setMessage("You are a firefighting pro!");    
+  }
+
+  if (nextTile === TILE.FIRE_B && hasExtinguisher2) {
+    fireBOut = true;
+    setMessage("Should've been a fireman...");
+  }
+
+  /* ---- Pickups ---- */
+
+if (nextTile === TILE.REVOLVER) {
+  hasRevolver = true;
+  setMessage("A revolver? In this vent??! Hmm... No bullets.")
+}
+
+
+if (nextTile === TILE.SQUIRT_GUN) {
+  hasSquirtGun = true;
+  setMessage("You found a water gun. Space bar pulls the trigger. [on Mobile: Center Button]");
+
+  maze[nextY] =
+    maze[nextY].substring(0, nextX) +
+    " " +
+    maze[nextY].substring(nextX + 1);
+
+  playerX = nextX;
+  playerY = nextY;
+
+  drawMaze();
+  return;
+}
+
+if (nextTile === TILE.FLASHLIGHT) {
+  hasFlashlight = true;
+  setMessage("The flashlight still works.");
+
+  maze[nextY] =
+    maze[nextY].substring(0, nextX) +
+    " " +
+    maze[nextY].substring(nextX + 1);
+
+  playerX = nextX;
+  playerY = nextY;
+
+  drawMaze();
+  return;
+}
+
+  if (nextTile === TILE.PAGER) {
+  hasPager = true;
+  pagerPickedUp = true;
+  setMessage("You found a RETRO-TECH pager...");
+}
+
+  if (nextTile === TILE.LADDER) {
+    hasLadder = true;
+    setMessage("You picked up the ladder.");
+  }
+
+    if (nextTile === TILE.KEY_C) {
+    hasKeyC = true;
+    setMessage("You picked up Key C.");
+  }
+
+  if (nextTile === TILE.KEY_D) {
+    hasKeyD = true;
+    setMessage("You picked up Key D.");
+  }
+
+  if (nextTile === TILE.KEY_A) {
+    hasKeyA = true;
+    setMessage("You picked up Key A.");
+  }
+
+  if (nextTile === TILE.KEY_B) {
+    hasKeyB = true;
+    setMessage("You picked up Key B.");
+  }
+
+  if (nextTile === TILE.EXTINGUISHER2) {
+    hasExtinguisher2 = true;
+    setMessage("You grab the fire extinguisher from the wall.");
+  }
+
+  if (nextTile === TILE.EXTINGUISHER) {
+    hasExtinguisher = true;
+    setMessage("You picked up the fire extinguisher.");
+  }
+
+  if (nextTile === TILE.LEVEL_2_DISK) {
+    hasLevel2Disk = true;
+    setMessage("You picked up the 'Weird Wizard Apartment' game disk...");
+  }
+  if (nextTile === TILE.MEDICINE_DOG) {
+    hasMedicineDog = true;
+    setMessage("You picked up 'Medicine Dog' Ambulance game disk...");
+  }
+
+if (nextTile === TILE.CASSETTE_TAPE) {
+  hasTapeR = true;
+  setMessage("You picked up a cassette tape.");
+}
+
+  /* ---- Radio interaction ---- */
+
+if (nextTile === TILE.RADIO) {
+  viewingRadio = true;
+  drawRadioCloseup();
+  return;
+}
+
+
+  /* ---- Computer victory / level transition ---- */
+
+/* ---- Computer disk menu ---- */
+
+if (
+  nextTile === TILE.COMPUTER &&
+  radioState === 2
+) {
+  computerActivated = true;
+
+  const choice = prompt(
+    "RETRO-TECH TERMINAL\n\n" +
+    "1 = Run 'Weird Wizard Apartment'\n" +
+    "2 = Run 'Medicine Dog'\n" +
+    "3 = Enter Command\n" +
+    "4 = Shutdown"
+  );
+
+  if (choice === "1") {
+    if (hasLevel2Disk) {
+      window.location.href = "2-game-prototype-1.html";
+    } else {
+      setMessage("No Weird Wizard Apartment disk detected...");
+    }
+    return;
+  }
+
+  else if (choice === "2") {
+    if (hasMedicineDog) {
+      window.location.href = "../2-emoji-traffic-prototype.html";
+    } else {
+      setMessage("No Medicine Dog disk detected...");
+    }
+    return;
+  }
+
+  else if (choice === "3") {
+    const command = prompt(
+      "RETRO-TECH TERMINAL\n\n" +
+      "Enter Command:"
+    );
+
+    if (command === "Exit Door//open") {
+      wallVanish = true;
+      setMessage("EXIT DOOR OPENED.");
+      drawMaze();
+    } else {
+      setMessage("UNKNOWN COMMAND.");
+    }
+    return;
+  }
+
+  else if (choice === "4") {
+    setMessage("System shutting down.");
+    return;
+  }
+
+  else {
+    setMessage("Invalid terminal selection.");
+    return;
+  }
+}
+/* ---- ^ gotta program in other game choice ---- */
+
+/* ---- Breaker interaction ---- */
+
+if (nextTile === TILE.BREAKER) {
+  radioState = 2;
+
+  fireAOut = false;
+
+  fireBOut = false;
+
+  setMessage("You flip the breaker. Somewhere nearby, a radio hums to life... and sparks erupt nearby!");
+
+  drawMaze();
+  return;
+}
+
+if (nextTile === TILE.SPECIAL_VENT) {
+    if (maze === room4) {
+  maze = room5;
+  playerX = nextX;
+  playerY = 1;
+
+  drawMaze();
+  startRatScurry();
+  return;
+}
+
+
+
+else if (maze === room5) {
+    maze = room4;
+    playerX = nextX;
+    playerY = room1.length -2;
+}
+  drawMaze();
+  return;
+}
+
+
+if (nextTile === TILE.ROOM_EXIT_DOWN) {
+
+    if (maze === room1) {
+        maze = room2;
+        playerX = nextX;
+        playerY = 1;
+    }
+
+else if (maze === room2) {
+    maze = room1;
+    playerX = nextX;
+    playerY = room1.length - 2;
+}
+
+  drawMaze();
+  return;
+}
+
+
+if (nextTile === TILE.TELEPORTER_1) {
+  if (maze === room2) {
+    maze = room4;
+
+    playerX = 1;
+    playerY = 4;
+    
+  }
+
+  else if (maze === room4) {
+    maze = room2;
+
+    playerX = 9;
+    playerY = 4;   
+  }
+
+  drawMaze();
+  return;
+}
+
+if (nextTile === TILE.TELEPORTER_2) {
+  if (maze === room3) {
+    maze = room4;
+
+    playerX = 6;
+    playerY = 1;
+    
+  }
+
+  else if (maze === room4) {
+    maze = room3;
+
+    playerX = 6;
+    playerY = 9;  
+  }
+
+  drawMaze();
+  return;
+}
+
+if (nextTile === TILE.VENT_ENTRANCE) {
+
+  if (!hasLadder) {
+  setMessage("The vent is too high to reach.");
+  return;
+}
+
+  if (maze === room1) {
+    maze = room3;
+
+    playerX = 1;
+    playerY = 1;   // one tile above vent
+  }
+
+  else if (maze === room3) {
+    maze = room1;
+
+    playerX = 9;
+    playerY = 1;   // one tile below vent
+  }
+
+  drawMaze();
+  return;
+}
+
+if (
+  nextTile === TILE.PAGER_DEPLETED &&
+  hasPager &&
+  !pagerBatteryTrapUsed
+) {
+  hasPager = false;
+  pagerBatteryTrapUsed = true;
+
+  setMessage(
+    "The pager screen flickers and goes dark. Battery depleted."
+  );
+}
+
+if (hasPagerBattery && !hasPager && pagerPickedUp) {
+  hasPager = true;
+  hasPagerBattery = false;
+
+  setMessage("You replace the pager battery.");
+  drawInventory ();
+  return;
+}
+
+ if (
+  nextTile === TILE.PAGE_TRIGGER &&
+  hasPager &&
+  !gotPage1
+) {
+  gotPage1 = true;
+  viewingPager = true;
+
+  setMessage("BEEP BEEP... Pager Battery: Low.");
+
+  drawPagerCloseup();
+  return;
+}
+
+if (
+  nextTile === TILE.PAGE_TRIGGER_2 &&
+  hasPager
+) {
+  gotPage2 = true;
+  viewingPager = true;
+
+  playerX = nextX;
+  playerY = nextY;
+
+  setMessage("The RETRO-TECH Terminal Command for the Exit Door is 'Exit Door//open'.");
+
+  drawMaze();
+  drawPagerCloseup();
+  return;
+}
+
+if (
+  nextTile === TILE.PAGE_TRIGGER_3 &&
+  hasPager
+) {
+
+  const taunts = [
+    "Hellhound, just GIVE UP already! YOU can't troubleshoot THIS!",
+    "Hellhound, why don't you call it quits?",
+    "Hellhound, are you lost again? RETRO-TECH maze difficulty: IMPOSSIBLE!",
+    "Don't you KNOW?? RETRO-TECH puzzles CANNOT ever be SOLVED!",
+    "No TECHNICIAN has ever escaped this RETRO-TECH facility.",
+    "There is only ONE way out! Troubleshoot the RETRO-TECH facility!",
+    "Hellhound, you'll NEVER get OUT of here! Troubleshooting status: doomed. Ha!",
+    "Breaker FLIPPED or NOT, it'll be TRICKY BUSINESS without any LIGHT BULBS! Ha ha ha!"
+  ];
+
+  const randomTaunt =
+    taunts[Math.floor(Math.random() * taunts.length)];
+
+  setMessage(randomTaunt);
+
+  viewingPager = true;
+
+  playerX = nextX;
+  playerY = nextY;
+
+  drawMaze();
+  drawPagerCloseup();
+  return;
+}
+
+if (
+  (nextTile === TILE.COUCH_LEFT ||
+   nextTile === TILE.COUCH_MIDDLE ||
+   nextTile === TILE.COUCH_RIGHT) &&
+   !foundCouch
+)
+{
+  foundCouch = true;
+
+  setMessage(
+    "You stumbled upon a couch in the darkness..."
+  );
+
+  return;
+}
+
+if (
+  (nextTile === TILE.COUCH_LEFT ||
+   nextTile === TILE.COUCH_MIDDLE ||
+   nextTile === TILE.COUCH_RIGHT) &&
+   !searchedCouch
+)
+{
+  hasDollar = true;
+  hasPagerBattery = true;
+  
+  searchedCouch = true;
+  setMessage(
+  "You search between the cushions and find a few dollars and a pager battery."
+);
+  return;
+}
+
+if (
+  nextTile === TILE.COUCH_LEFT ||
+  nextTile === TILE.COUCH_MIDDLE ||
+  nextTile === TILE.COUCH_RIGHT
+)
+{
+  setMessage("Nothing else in the couch.");
+}
+
+/* ---- Move player after successful interaction ---- */
+
+playerX = nextX;
+playerY = nextY;
+
+if (playerX === skullX && playerY === skullY) {
+  damageMorale();
+}
+
+drawMaze();
+}
+
+function drawPagerCloseup() {
+  const overlay = document.getElementById("overlay");
+
+  overlay.style.display = "flex";
+
+  overlay.innerHTML = `
+    <div class="popup">
+      <img src="${getPagerCloseupImage()}">
+      <br>
+      <button onclick="checkPager()">Check Messages</button>
+    </div>
+  `;
+}
+
+function getPagerCloseupImage() {
+    return "../0-game-gallery/pager-active.png";
+  }
+
+function checkPager() {
+  viewingPager = false;
+
+  const overlay = document.getElementById("overlay");
+
+  overlay.style.display = "none";
+  overlay.innerHTML = "";
+}
+
+function drawRadioCloseup() {
+  const overlay = document.getElementById("overlay");
+
+  overlay.style.display = "flex";
+
+  overlay.innerHTML = `
+    <div class="popup">
+      <img src="${getRadioCloseupImage()}">
+      <br>
+      <button onclick="listenRadio()">Listen</button>
+      <button onclick="closeRadio()">Back</button>
+    </div>
+  `;
+}
+
+function getRadioCloseupImage() {
+  if (radioState === 1) {
+    return "../0-game-gallery/big-2-radio-off.png";
+  }
+
+  if (radioState === 2) {
+    return "../0-game-gallery/big-2-radio-good.png";
+  }
+
+  if (radioState === 3) {
+    return "../0-game-gallery/big-2-radio-bad.png";
+  }
+}
+
+function listenRadio() {
+  if (radioState === 1) {
+    setMessage("The radio has no power.");
+  } else if (radioState === 2) {
+    if (hasTapeR) {
+    setMessage(
+  "The cassette clicks in. 'Hellhound: you have been selected to troubleshoot this RETRO-TECH facility due to your maximum capabilities as a troubleshooter and three-headed dog-man. Once you escape, you will be compensated financially for all trauma incurred during testing. Further instructions may be available through facility communications devices.'");
+
+    } else {
+      setMessage("You don't have any tapes to play right now.");
+    }
+  } else if (radioState === 3) {
+    setMessage("The radio crackles with distorted static.");
+  }
+}
+
+function closeRadio() {
+  viewingRadio = false;
+
+  const overlay = document.getElementById("overlay");
+
+  overlay.style.display = "none";
+  overlay.innerHTML = "";
+}
+
+
+
+/* ==========================
+   KEYBOARD CONTROLS
+========================== */
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "ArrowUp") movePlayer(0, -1);
+  if (event.key === "ArrowDown") movePlayer(0, 1);
+  if (event.key === "ArrowLeft") movePlayer(-1, 0);
+  if (event.key === "ArrowRight") movePlayer(1, 0);
+
+  if (event.code === "Space") {
+    squirtStream();
+  }
+});
+
+/* ==========================
+   START GAME
+========================== */
+
+/* ==========================
+   START GAME
+========================== */
+
+drawMaze();
+setInterval(moveSkullInfluencer, 700);
+
+</script>
+
+</body>
+</html>

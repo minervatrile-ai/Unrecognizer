@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Testing Switch</title>
+
+  <style>
+    body {
+      background: #000;
+      color: #ff9bd5;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: #ff9bd5;
+      text-shadow: 0 0 10px #00ff66;
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    #switchImage {
+      max-width: 90%;
+      width: 420px;
+      cursor: pointer;
+      filter: drop-shadow(0 0 18px #00ff66);
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    #switchImage:hover {
+      transform: scale(1.04);
+      filter: drop-shadow(0 0 28px #00ff66);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 id="switchText">testing this switch: OFF</h1>
+
+  <img 
+    id="switchImage"
+    src="../gallery/switch-1-off.png"
+    alt="Switch is off"
+  >
+  <p><h3>Eventuality is not causality. This switch is not a cause, but a test of the illusion of causality.</h3></p>
+  <br>
+  <h1>CLICK-CLOWN</h1>
+  
+  <div style="width:auto; height:auto;">
+  <img
+    id="transformImage"
+    src="../gallery/friendly-clown.png"
+    alt="also evil clown but happy"
+  >
+  </div>
+  <div style="text-align:center;">
+    <p><h3>The goal is to make the clown change when the switch is flipped, instead of when he is clicked on. He can be assigned to the same switch, but I made him into his own image cycler for now...</h3></p>
+
+    <div>
+      <h1><a href="../1-game-prototype/1-console.html">SKELETON CIRCUS GAME CONSOLE</h1></a>
+      <h3>The villain is going to be a TV on a unicycle wheel with a skull on the screen. Here is the link above that goes to the prototype game console [The Skeleton Circus Game Console]!</h3>
+      </div>
+  
+  <p><h1><a href="entrance.html" style="color: yellow">Back to Entrance</a></h1></p>
+  <script>
+    const switchImage = document.getElementById("switchImage");
+    const switchText = document.getElementById("switchText");
+
+    let isOn = false;
+
+    switchImage.addEventListener("click", function () {
+      isOn = !isOn;
+
+      if (isOn) {
+        switchImage.src = "../gallery/switch-1-on.png";
+        switchImage.alt = "Switch is on";
+        switchText.textContent = "testing this switch: ON";
+      } else {
+        switchImage.src = "../gallery/switch-1-off.png";
+        switchImage.alt = "Switch is off";
+        switchText.textContent = "testing this switch: OFF";
+      }
+    });
+  </script>
+  <script>
+    const transformImage = document.getElementById("transformImage"); 
+   
+
+    let isClicked = false; 
+
+    transformImage.addEventListener("click", function () { 
+      isClicked = !isClicked; 
+
+      if (isClicked) { 
+        transformImage.src = "../gallery/friendly-clown-2.png"; 
+        transformImage.alt = "also evil clown";  
+      } else {
+        transformImage.src = "../gallery/friendly-clown.png"; 
+        transformImage.alt = "evil clown but not as scary"; 
+      }
+    });
+  </script>
+  
+</body>
+</html>

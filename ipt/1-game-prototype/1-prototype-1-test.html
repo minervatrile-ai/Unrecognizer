@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Skull Influencer</title>
+
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    a {
+      color: #b4438c
+    }
+
+    .game {
+      position: relative;
+      height: 500px;
+      border: 3px solid white;
+      overflow: hidden;
+      background-image: url("../gallery/1-game-images/1-game-skull-influencer-backdrop-3.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #enemy {
+      position: absolute;
+      left: 100px;
+      top: 100px;
+      cursor: crosshair;
+      font-size: 1rem;
+      user-select: none;
+    }
+
+    .hit {
+      transform: scale(1.25);
+    }
+
+    #scoreboard {
+      font-size: 1.5rem;
+      margin: 15px;
+    }
+
+    #effect {
+      font-size: 2rem;
+      margin-top: 20px;
+    }
+
+    #enemy img {
+  width: 140px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.weapon-btn {
+  background: #222;
+  color: white;
+  border: 2px solid #777;
+  padding: 10px 14px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.weapon-btn.selected {
+  background: red;
+  color: white;
+  border: 3px solid yellow;
+  box-shadow: 0 0 12px red, 0 0 22px yellow;
+  transform: scale(1.08);
+}
+  </style>
+</head>
+
+<body>
+
+  <h1>📺💀 The Skull Influencer</h1>
+  <h3><a href="1-console.html">Go back...</a></h3>
+  <h4 style="color: yellowgreen">Toggle between IPT Tomatoes, the Mirror Engine, or the Pause Field, by selecting any one of the 3 by clicking on the button of choice. These are your Modes of Engagement. Then click on the Skull Influencer, a skull on a TV screen with a unicycle wheel, rolling around all over the place, to engage it. Check back, as this prototype of the game will be upgraded more in due time.</h4>
+
+  <div class="hud">
+    <button id="btn-tomato" class="weapon-btn selected" onclick="selectWeapon('tomato')">🍅 IPT Tomatoes</button>
+<button id="btn-mirror" class="weapon-btn" onclick="selectWeapon('mirror')">🪞 Mirror Engine</button>
+<button id="btn-pause" class="weapon-btn" onclick="selectWeapon('pause')">⏸️ Pause Field</button>
+  </div>
+
+  <div id="scoreboard">
+  Villain Charisma: <span id="charisma">20</span><br>
+  Evil Channel Status: <span id="status">🔥 Viral</span>
+</div>
+
+  <div class="game">
+
+  <div id="enemy" onclick="hitEnemy()">
+  <img id="enemy-img"
+       src="../gallery/1-game-images/1-game-skull-influencer.png"
+       alt="The Skull Influencer">
+
+  <div id="quote">YOUR WORLDVIEW IS UNDER THREAT!</div>
+</div>
+
+    <div id="effect"></div>
+  </div>
+
+  <script>
+    let weapon = "tomato";
+    let charisma = 20;
+
+    const quotes = [
+      "Your WORLDVIEW is under THREAT!",
+      "Engage IMMEDIATELY!",
+      "You MUST pick a SIDE!",
+      "EVERYTHING is an EMERGENCY!",
+      "OUTRAGE generates CLICKS!",
+      "DEHUMANIZE differing OTHERS!",
+      "THEY are NOT like US!",
+      "THEY aren't even HUMAN!",
+      "Only THIS channel knows!",
+      "We can't TOLERATE differences!",
+      "Let ME control the NARRATIVE!",
+      "It's US vs THEM!",
+      "THEY are REPLACING us!",
+      "Our WAY OF LIFE is DYING!",
+      "Only OUR group is WORTHY!",
+      "Go ahead; TRY to change the channel!",
+      "Only TRAITORS turn the CHANNEL!",
+      "DIVISION is PROFITABLE!",
+      "Only FOOLS are not like US!",
+      "If I fail, we ALL fail!",
+      "Only WE have the VIRTUE!"
+    ];
+
+const enemyImages = {
+  normal: "../gallery/1-game-images/1-game-skull-influencer.png",
+  tomato: "../gallery/1-game-images/1-game-skull-influencer-hit-tomato.png",
+  mirror: "../gallery/1-game-images/1-game-skull-influencer-hit-mirror.png",
+  pause: "../gallery/1-game-images/1-game-skull-influencer-hit-pause.png"
+};
+
+    function selectWeapon(choice) {
+  weapon = choice;
+
+  document.querySelectorAll(".weapon-btn").forEach(button => {
+    button.classList.remove("selected");
+  });
+
+  document.getElementById("btn-" + choice).classList.add("selected");
+}
+
+    function hitEnemy() {
+
+if (charisma <= 0) {
+  return;
+}
+
+      const enemyImg = document.getElementById("enemy-img");
+
+charisma--;
+
+if (charisma < 0) {
+  charisma = 0;
+}
+
+document.getElementById("charisma").textContent = charisma;
+
+const status = document.getElementById("status");
+
+if (charisma >= 16) {
+  status.textContent = "🔥 Viral";
+}
+else if (charisma >= 11) {
+  status.textContent = "📈 Trending";
+}
+else if (charisma >= 6) {
+  status.textContent = "😬 Losing Influence";
+}
+else if (charisma >= 1) {
+  status.textContent = "📉 Irrelevant";
+}
+else {
+  status.textContent = "💀 Deplatformed by Reality";
+}
+
+
+      const effect = document.getElementById("effect");
+      const enemy = document.getElementById("enemy");
+
+      if (weapon === "tomato") {
+        effect.textContent = "🍅 SPLAT!";
+        enemyImg.src = enemyImages.tomato;
+      } else if (weapon === "mirror") {
+        effect.textContent = "🪞 MANIPULATION REFLECTED!";
+        enemyImg.src = enemyImages.mirror;
+      } else if (weapon === "pause") {
+        effect.textContent = "⏸️ SIGNAL SLOWED!";
+        enemyImg.src = enemyImages.pause;
+      }
+
+      if (charisma <= 0) {
+  document.getElementById("quote").textContent =
+    "YOU HAVE RECOGNIZED THE MANIPULATION ENGINE.";
+} else {
+  document.getElementById("quote").textContent =
+    quotes[Math.floor(Math.random() * quotes.length)];
+}
+
+      enemy.classList.add("hit");
+
+      setTimeout(() => {
+        enemy.classList.remove("hit");
+        effect.textContent = "";
+        enemyImg.src = enemyImages.normal;
+      }, 1500);
+
+      moveEnemy();
+    }
+
+    function moveEnemy() {
+
+if (charisma <= 0) {
+  return;
+}
+
+      const enemy = document.getElementById("enemy");
+      const game = document.querySelector(".game");
+
+      const maxX = game.clientWidth - enemy.offsetWidth;
+      const maxY = game.clientHeight - enemy.offsetHeight;
+
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+
+      enemy.style.left = randomX + "px";
+      enemy.style.top = randomY + "px";
+    }
+
+    window.onload = function() {
+    moveEnemy();
+    setInterval(moveEnemy, 1200);
+};
+  </script>
+
+</body>
+</html>

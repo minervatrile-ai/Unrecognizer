@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hellhound Prototype Test Runs</title>
+
+<style>
+/* ==========================
+   PAGE / GAME AREA
+========================== */
+
+body {
+  background: black;
+  color: lime;
+  font-family: monospace;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+#message {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  background: black;
+  border: 2px solid lime;
+
+  margin: 10px auto;
+  padding: 10px;
+
+  font-size: 20px;
+}
+
+.popup {
+  grid-column: 1 / -1;
+  border: 2px solid lime;
+  background: black;
+  padding: 20px;
+}
+
+.popup img {
+  width: 192px;
+  height: 192px;
+  image-rendering: pixelated;
+}
+
+.popup button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-family: monospace;
+}
+
+#maze {
+  display: grid;
+  grid-template-columns: repeat(11, 64px);
+  grid-auto-rows: 64px;
+  gap: 0;
+
+  width: max-content;
+  margin: 20px auto;
+}
+
+.tile {
+  width: 64px;
+  height: 64px;
+  background-size:cover;
+  background-position:center;
+  image-rendering: pixelated;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0,0,0,0.7);
+
+  z-index: 999;
+}
+
+/* ==========================
+   MOBILE CONTROLS
+========================== */
+
+.mobile-controls {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-controls {
+    display: grid;
+    grid-template-columns: 96px 96px 96px;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+}
+
+.center-button {
+  visibility: hidden;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Hellhound Prototype Test Run</h1>
+
+<div id="message">Explore the world...</div>
+
+<div id="maze"></div>
+
+<div id="overlay"></div>
+
+<div class="mobile-controls">
+  <div></div>
+  <button onclick="movePlayer(0, -1)">▲</button>
+  <div></div>
+
+  <button onclick="movePlayer(-1, 0)">◀</button>
+  <button class="center-button" disabled>•</button>
+  <button onclick="movePlayer(1, 0)">▶</button>
+
+  <div></div>
+  <button onclick="movePlayer(0, 1)">▼</button>
+  <div></div>
+</div>
+
+<script>
+/* ==========================
+   TILE LEGEND
+
+   # = wall
+     = floor
+   P = player start
+
+   A = door A
+   a = key A
+
+   B = door B
+   b = key B
+
+   O = fire A
+   F = fire B
+
+   E = fire extinguisher
+   Q = Level 2 disk
+   C = computer
+   U = desk
+
+   R = radio object
+   radioState 1 = radio off
+   radioState 2 = radio good
+   radioState 3 = radio bad
+
+   r = radio cassette tape
+========================== */
+
+const TILE = {
+
+  ROOM_EXIT_DOWN: "d",  
+
+  WALL: "#",
+  FLOOR: " ",
+  PLAYER_START: "P",
+  VICTORY_DISPLAY: "v",
+
+  RADIO: "R",
+  RADIO_GOOD: "2",
+  RADIO_BAD: "3",
+  RADIO_OFF: "1",
+  CASSETTE_TAPE: "r",
+
+  DOOR_A: "A",
+  KEY_A: "a",
+
+  DOOR_B: "B",
+  KEY_B: "b",
+
+  FIRE_A: "O",
+  FIRE_B: "F",
+
+  EXTINGUISHER2: "e",
+  EXTINGUISHER: "E",
+  LEVEL_2_DISK: "Q",
+  COMPUTER: "C",
+  DESK: "U",
+
+  MEDICINE_DOG: "M",
+
+  BREAKER: "X",
+
+  PHONY_WALL: "Z"
+};
+
+/* ==========================
+   GAME MAP
+========================== */
+
+const room1 = [
+  "###########",
+  "#PC#FFF AM#",
+  "# U#FRF####",
+  "# ## #    #",
+  "#    # #  #",
+  "###B## # R#",
+  "#OOO#  ####",
+  "#QRO#    X#",
+  "# ###  #  #",
+  "#EZ r b# a#",
+  "#####d#####"
+];
+
+const room2 = [
+  "#####d#####",
+  "#       e #",
+  "#         #",
+  "#         #",
+  "#     C   #",
+  "#     U   #",
+  "#         #",
+  "#         #",
+  "#         #",
+  "#         #",
+  "###########"
+];
+
+let maze = room1;
+
+/* ==========================
+   PLAYER POSITION
+========================== */
+
+let playerX = 1;
+let playerY = 1;
+
+/* ==========================
+   GAME STATE
+========================== */
+
+let hasKeyA = false;
+let hasKeyB = false;
+
+let doorAOpen = false;
+let doorBOpen = false;
+
+let hasExtinguisher = false;
+let hasExtinguisher2 = false;
+
+let fireAOut = true;
+let fireBOut = true;
+
+let hasLevel2Disk = false;
+let computerActivated = false;
+
+let radioState = 1;
+let hasTapeR = false;
+
+let viewingRadio = false;
+let wallVanish = false;
+
+let hasMedicineDog = false;
+
+
+/* ==========================
+   TILE IMAGES
+========================== */
+
+const tileImages = {
+  [TILE.WALL]: "../0-game-gallery/0-wall.png",
+  [TILE.FLOOR]: "../0-game-gallery/0-floor.png",
+
+  [TILE.ROOM_EXIT_DOWN]: "../0-game-gallery/0-floor.png",
+
+  [TILE.PHONY_WALL]: "../0-game-gallery/0-wall.png",
+
+  [TILE.PLAYER_START]: "../0-game-gallery/0player.png",
+
+  [TILE.DOOR_A]: "../0-game-gallery/1-door.png",
+  [TILE.DOOR_B]: "../0-game-gallery/1-door.png",
+
+  [TILE.KEY_A]: "../0-game-gallery/1-key.png",
+  [TILE.KEY_B]: "../0-game-gallery/1-key.png",
+
+  [TILE.FIRE_A]: "../0-game-gallery/2-fire.png",
+  [TILE.FIRE_B]: "../0-game-gallery/2-fire.png",
+
+  [TILE.EXTINGUISHER2]: "../0-game-gallery/2-extinguisher.png",
+  [TILE.EXTINGUISHER]: "../0-game-gallery/2-extinguisher.png",
+  [TILE.LEVEL_2_DISK]: "../0-game-gallery/2-floppy.png",
+  [TILE.MEDICINE_DOG]: "../0-game-gallery/2-floppy.png",
+  [TILE.DESK]: "../0-game-gallery/3-desk.png",
+  [TILE.COMPUTER]: "../0-game-gallery/2-computer.png",
+
+  [TILE.RADIO_OFF]: "../0-game-gallery/2-radio-off.png",
+  [TILE.RADIO_GOOD]: "../0-game-gallery/2-radio-good.png",
+  [TILE.RADIO_BAD]: "../0-game-gallery/2-radio-bad.png",
+  [TILE.CASSETTE_TAPE]: "../0-game-gallery/2-cassette.png",
+
+  [TILE.BREAKER]: "../0-game-gallery/4-breaker-box.png"
+
+};
+
+/* ==========================
+   SMALL HELPERS
+========================== */
+
+function setMessage(text) {
+  document.getElementById("message").innerText = text;
+}
+
+function getMapTile(x, y) {
+  return maze[y][x];
+}
+
+/*
+  This decides what each map cell should LOOK like
+  after the game state has changed.
+*/
+function getVisibleTile(cell) {
+  if (cell === TILE.PLAYER_START) return TILE.FLOOR;
+
+  if (cell === TILE.KEY_A && hasKeyA) return TILE.FLOOR;
+  if (cell === TILE.KEY_B && hasKeyB) return TILE.FLOOR;
+
+  if (cell === TILE.DOOR_A && doorAOpen) return TILE.FLOOR;
+  if (cell === TILE.DOOR_B && doorBOpen) return TILE.FLOOR;
+
+  if (cell === TILE.FIRE_A && fireAOut) return TILE.FLOOR;
+  if (cell === TILE.FIRE_B && fireBOut) return TILE.FLOOR;
+
+  if (cell === TILE.EXTINGUISHER2 && hasExtinguisher2) return TILE.FLOOR;
+  if (cell === TILE.EXTINGUISHER && hasExtinguisher) return TILE.FLOOR;
+  if (cell === TILE.LEVEL_2_DISK && hasLevel2Disk) return TILE.FLOOR;
+  if (cell === TILE.MEDICINE_DOG && hasMedicineDog) return TILE.FLOOR;
+  if (cell === TILE.CASSETTE_TAPE && hasTapeR) return TILE.FLOOR;
+  if (cell === TILE.PHONY_WALL && wallVanish) return TILE.FLOOR;
+
+if (cell === TILE.RADIO) {
+  if (radioState === 1) return TILE.RADIO_OFF;
+  if (radioState === 2) return TILE.RADIO_GOOD;
+  if (radioState === 3) return TILE.RADIO_BAD;
+}
+
+  return cell;
+
+}
+
+/* ==========================
+   DRAW MAZE
+========================== */
+
+function drawMaze() {
+  const mazeDiv = document.getElementById("maze");
+  mazeDiv.innerHTML = "";
+
+  for (let y = 0; y < maze.length; y++) {
+    for (let x = 0; x < maze[y].length; x++) {
+      let cell = getVisibleTile(getMapTile(x, y));
+
+      if (x === playerX && y === playerY) {
+        cell = TILE.PLAYER_START;
+      }
+
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.style.backgroundImage = `url(${tileImages[cell]})`;
+
+      mazeDiv.appendChild(tile);
+    }
+  }
+}
+
+/* ==========================
+   INTERACTION LOGIC
+========================== */
+
+function movePlayer(dx, dy) {
+  const nextX = playerX + dx;
+  const nextY = playerY + dy;
+  const nextTile = getMapTile(nextX, nextY);
+
+  /* ---- Hard blockers ---- */
+
+  if (nextTile === TILE.WALL) {
+    setMessage("A wall blocks your path.");
+    return;
+  }
+
+  if (nextTile === TILE.PHONY_WALL && !wallVanish) {
+    setMessage("The wall song's meaning... suddenly becomes clear.");
+    wallVanish = true;
+    return;
+    
+  }
+
+  if (nextTile === TILE.DESK) {
+    setMessage("Can't walk here. There's a desk in the way...");
+    return;
+  }
+
+  if (
+  nextTile === TILE.COMPUTER &&
+  radioState !== 2
+) {
+  setMessage("Computer has no power...");
+  return;
+}
+
+if (
+  nextTile === TILE.COMPUTER &&
+  !hasLevel2Disk &&
+  !hasMedicineDog
+) {
+  setMessage("No disk to read...");
+  return;
+}
+
+  /* ---- Locked doors ---- */
+
+  if (nextTile === TILE.DOOR_A && !hasKeyA) {
+    setMessage("Door A is locked.");
+    return;
+  }
+
+  if (nextTile === TILE.DOOR_B && !hasKeyB) {
+    setMessage("Door B is locked.");
+    return;
+  }
+
+  /* ---- Dangerous fires ---- */
+
+ if (nextTile === TILE.FIRE_A &&
+    !fireAOut &&
+    !hasExtinguisher &&
+    !hasExtinguisher2) {
+
+    setMessage("Ouch! Fire is burning hot!");
+    return;
+}
+
+if (nextTile === TILE.FIRE_B &&
+    !fireBOut &&
+    !hasExtinguisher &&
+    !hasExtinguisher2) {
+
+    setMessage("Too hot! You need a fire extinguisher.");
+    return;
+}
+
+  /* ---- Door success states ---- */
+
+  if (nextTile === TILE.DOOR_A && hasKeyA) {
+    doorAOpen = true;
+    setMessage("Key A turns. Door A opens.");
+  }
+
+  if (nextTile === TILE.DOOR_B && hasKeyB) {
+    doorBOpen = true;
+    setMessage("Key B turns. Door B opens.");
+  }
+
+  /* ---- Fire success states ---- */
+
+  if (nextTile === TILE.FIRE_A && hasExtinguisher) {
+    fireAOut = true;
+    setMessage("You sweep the fire with blasts of foam... It went out!");
+  }
+
+  if (nextTile === TILE.FIRE_B && hasExtinguisher) {
+    fireBOut = true;
+    setMessage("Fffssssshhhh! You put out the fire.");
+  }
+
+  if (nextTile === TILE.FIRE_A && hasExtinguisher2) {
+    fireAOut = true;
+    setMessage("You are a firefighting pro!");    
+  }
+
+  if (nextTile === TILE.FIRE_B && hasExtinguisher2) {
+    fireBOut = true;
+    setMessage("Should've been a fireman...");
+  }
+
+  /* ---- Pickups ---- */
+
+  if (nextTile === TILE.KEY_A) {
+    hasKeyA = true;
+    setMessage("You picked up Key A.");
+  }
+
+  if (nextTile === TILE.KEY_B) {
+    hasKeyB = true;
+    setMessage("You picked up Key B.");
+  }
+
+  if (nextTile === TILE.EXTINGUISHER2) {
+    hasExtinguisher2 = true;
+    setMessage("You grab the fire extinguisher from the wall.");
+  }
+
+  if (nextTile === TILE.EXTINGUISHER) {
+    hasExtinguisher = true;
+    setMessage("You picked up the fire extinguisher.");
+  }
+
+  if (nextTile === TILE.LEVEL_2_DISK) {
+    hasLevel2Disk = true;
+    setMessage("You picked up the 'Weird Wizard Apartment' disk...");
+  }
+  if (nextTile === TILE.MEDICINE_DOG) {
+    hasMedicineDog = true;
+    setMessage("You picked up 'Medicine Dog' disk...");
+  }
+
+if (nextTile === TILE.CASSETTE_TAPE) {
+  hasTapeR = true;
+  setMessage("You picked up a cassette tape.");
+}
+
+  /* ---- Radio interaction ---- */
+
+if (nextTile === TILE.RADIO) {
+  viewingRadio = true;
+  drawRadioCloseup();
+  return;
+}
+
+
+  /* ---- Computer victory / level transition ---- */
+
+/* ---- Computer disk menu ---- */
+
+if (
+  nextTile === TILE.COMPUTER &&
+  (hasLevel2Disk || hasMedicineDog) &&
+  radioState === 2
+) {
+  computerActivated = true;
+
+  const choice = prompt(
+    "DOS MENU\n\n" +
+    "1 = Run 'Weird Wizard Apartment' disk...\n" +
+    "2 = Run 'Medicine Dog' disk...\n" +
+    "3 = Shutdown"
+  );
+
+  if (choice === "1" && hasLevel2Disk) {
+  window.location.href = "2-game-prototype-1.html";
+}
+
+if (choice === "2" && hasMedicineDog) {
+  window.location.href = "../2-emoji-traffic-prototype.html";
+}
+
+  if (choice === "3") {
+    alert("System shutting down.");
+  }
+}
+/* ---- ^ gotta program in other game choice ---- */
+
+/* ---- Breaker interaction ---- */
+
+if (nextTile === TILE.BREAKER) {
+  radioState = 2;
+
+  fireAOut = false;
+
+  fireBOut = false;
+
+  setMessage("You flip the breaker. Somewhere nearby, a radio hums to life... and sparks erupt nearby!");
+
+  drawMaze();
+  return;
+}
+
+if (nextTile === TILE.ROOM_EXIT_DOWN) {
+
+    if (maze === room1) {
+        maze = room2;
+        playerX = nextX;
+        playerY = 1;
+    }
+
+else if (maze === room2) {
+    maze = room1;
+    playerX = nextX;
+    playerY = room1.length - 2;
+}
+
+  drawMaze();
+  return;
+}
+
+  /* ---- Move player after successful interaction ---- */
+
+  playerX = nextX;
+  playerY = nextY;
+
+  drawMaze();
+}
+
+function drawRadioCloseup() {
+  const overlay = document.getElementById("overlay");
+
+  overlay.style.display = "flex";
+
+  overlay.innerHTML = `
+    <div class="popup">
+      <img src="${getRadioCloseupImage()}">
+      <br>
+      <button onclick="listenRadio()">Listen</button>
+      <button onclick="closeRadio()">Back</button>
+    </div>
+  `;
+}
+
+function getRadioCloseupImage() {
+  if (radioState === 1) {
+    return "../0-game-gallery/big-2-radio-off.png";
+  }
+
+  if (radioState === 2) {
+    return "../0-game-gallery/big-2-radio-good.png";
+  }
+
+  if (radioState === 3) {
+    return "../0-game-gallery/big-2-radio-bad.png";
+  }
+}
+
+function listenRadio() {
+  if (radioState === 1) {
+    setMessage("The radio has no power.");
+  } else if (radioState === 2) {
+    if (hasTapeR) {
+      setMessage("The cassette clicks in, singing 'I'd walk thru walls 4 u, baby...'");
+    } else {
+      setMessage("You don't have any tapes to play right now.");
+    }
+  } else if (radioState === 3) {
+    setMessage("The radio crackles with distorted static.");
+  }
+}
+
+function closeRadio() {
+  viewingRadio = false;
+
+  const overlay = document.getElementById("overlay");
+
+  overlay.style.display = "none";
+  overlay.innerHTML = "";
+}
+
+/* ==========================
+   KEYBOARD CONTROLS
+========================== */
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "ArrowUp") movePlayer(0, -1);
+  if (event.key === "ArrowDown") movePlayer(0, 1);
+  if (event.key === "ArrowLeft") movePlayer(-1, 0);
+  if (event.key === "ArrowRight") movePlayer(1, 0);
+});
+
+/* ==========================
+   START GAME
+========================== */
+
+drawMaze();
+</script>
+
+</body>
+</html>

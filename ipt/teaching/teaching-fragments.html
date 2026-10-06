@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teaching Fragments</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 30px 20px;
+    background: #071015;
+    color: #f4f1e8;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+a {
+    color: #f7d774;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.page-wrap {
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    margin: 30px 0;
+    color: #f7d774;
+}
+
+.nav-link {
+    margin: 20px 0 35px;
+    font-size: 1.1rem;
+}
+
+.cycler-box {
+    background: #101b22;
+    border: 1px solid #2f4652;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 0 28px rgba(0,0,0,0.45);
+}
+
+.fragment-image {
+    width: 100%;
+    max-width: 850px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 14px;
+    border: 1px solid #3b5865;
+    box-shadow: 0 0 22px rgba(0,0,0,0.5);
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+button {
+    background: #f7d774;
+    color: #071015;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+button:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+}
+
+.description-placeholder {
+    margin: 35px auto;
+    max-width: 750px;
+    background: #0d171d;
+    border: 1px dashed #3b5865;
+    border-radius: 16px;
+    padding: 24px;
+    color: #cfd8dc;
+    line-height: 1.7;
+    text-align: left;
+}
+
+.description-placeholder h2 {
+    color: #f7d774;
+    margin-top: 0;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    body {
+        padding: 20px 12px;
+    }
+
+    .cycler-box {
+        padding: 14px;
+    }
+
+    button {
+        width: 140px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-wrap">
+
+    <div class="nav-link">
+        <a href="teaching.html">Back to Main Thought Bubble</a>
+    </div>
+
+    <h1>Teaching Fragments</h1>
+
+    <div class="cycler-box">
+
+        <img 
+            id="fragmentImage"
+            class="fragment-image"
+            src="../gallery/teaching-fragments/1-terror-management-fragment.jpg"
+            alt="Teaching Fragment"
+        >
+
+        <div class="button-row">
+            <button id="prevButton">Previous</button>
+            <button id="nextButton">Next</button>
+        </div>
+
+    </div>
+
+    <div class="description-placeholder">
+        <h2>The 12 Fragments of Teaching IPT</h2>
+        <p>
+            This is a very serious topic, so I hope these fragments can help you understand the core of what it means to teach IPT. Each fragment is a piece of the puzzle, and together they form a comprehensive picture of the teacher's field. Take your time with each one, and feel free to revisit them as you continue your journey with IPT.
+        </p>
+    </div>
+
+    <div class="nav-link">
+        <a href="teaching.html">Back to Main Thought Bubble</a>
+    </div>
+
+</div>
+
+<script>
+const fragmentImage = document.getElementById("fragmentImage");
+const prevButton = document.getElementById("prevButton");
+const nextButton = document.getElementById("nextButton");
+
+const fragmentImages = [
+    "../gallery/teaching-fragments/1-terror-management-fragment.jpg",
+    "../gallery/teaching-fragments/2-identity-fragment.jpg",
+    "../gallery/teaching-fragments/3-outrage-culture-fragment.jpg",
+    "../gallery/teaching-fragments/4-loneliness-fragment.jpg",
+    "../gallery/teaching-fragments/5-existential-anxiety-fragment.jpg",
+    "../gallery/teaching-fragments/6-social-risk-fragment.jpg",
+    "../gallery/teaching-fragments/7-the-core-question-fragment.jpg",
+    "../gallery/teaching-fragments/8-the-reframe-fragment.jpg",
+    "../gallery/teaching-fragments/9-the-field-realization-fragment.jpg",
+    "../gallery/teaching-fragments/10-the-shift-fragment.jpg",
+    "../gallery/teaching-fragments/11-the-response-fragment.jpg",
+    "../gallery/teaching-fragments/12-the-limit-fragment.jpg"
+];
+
+let currentImage = 0;
+
+function showImage() {
+    fragmentImage.src = fragmentImages[currentImage];
+}
+
+nextButton.addEventListener("click", function() {
+    currentImage++;
+
+    if (currentImage >= fragmentImages.length) {
+        currentImage = 0;
+    }
+
+    showImage();
+});
+
+prevButton.addEventListener("click", function() {
+    currentImage--;
+
+    if (currentImage < 0) {
+        currentImage = fragmentImages.length - 1;
+    }
+
+    showImage();
+});
+</script>
+
+</body>
+</html>

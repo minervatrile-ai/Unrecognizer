@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HELLHOUND: "MEDICINE DOG" AMBULANCE [Emoji Traffic Prototype]</title>
+
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    #gameScreen {
+      margin: 30px auto;
+      width: 640px;
+      height: 320px;
+      background: #333;
+      border: 4px solid white;
+      position: relative;
+      overflow: hidden;
+      font-size: 48px;
+    }
+
+    .vehicle, .player {
+      position: absolute;
+    }
+
+    button {
+      font-size: 24px;
+      padding: 15px 30px;
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>HELLHOUND: "MEDICINE DOG" AMBULANCE [Emoji Traffic Prototype]</h1>
+
+  <div id="gameScreen"></div>
+
+  <button onclick="movePlayerUp()">⬆️ UP</button>
+  <button onclick="movePlayerDown()">⬇️ DOWN</button>
+  <button onclick="speedUpPlayer()">➡️ Faster</button>
+<button onclick="slowDownPlayer()">⬅️ Slower</button>
+
+  <p id="message">Move up and down. The road pulls left.</p>
+
+  <script>
+    const gameScreen = document.getElementById("gameScreen");
+    const message = document.getElementById("message");
+
+    const screenWidth = 640;
+    const screenHeight = 320;
+
+    let playerSpeedLeft = 0.7;
+    const laneHeight = 80;
+
+    let player = {
+      emoji: "🚑",
+      x: 560,
+      y: 120
+    };
+
+    let traffic = [
+      { emoji: "🚚", x: 600, y: 40, speed: 1 },
+      { emoji: "🚗", x: 400, y: 120, speed: 2 },
+      { emoji: "🚓", x: 1000, y: 180, speed: 7 },
+      { emoji: "🚕", x: 700, y: 200, speed: 1.5 },
+      { emoji: "🏍️", x: 800, y: 160, speed: 7 }
+    ];
+
+    function movePlayerUp() {
+      player.y -= laneHeight;
+
+      if (player.y < 40) {
+        player.y = 40;
+      }
+    }
+
+    function movePlayerDown() {
+      player.y += laneHeight;
+
+      if (player.y > 200) {
+        player.y = 200;
+      }
+    }
+
+    function speedUpPlayer() {
+  playerSpeedLeft += 0.2;
+}
+
+function slowDownPlayer() {
+  playerSpeedLeft -= 0.2;
+}
+
+    function drawGame() {
+      gameScreen.innerHTML = "";
+
+      for (let car of traffic) {
+        const carDiv = document.createElement("div");
+        carDiv.className = "vehicle";
+        carDiv.textContent = car.emoji;
+        carDiv.style.left = car.x + "px";
+        carDiv.style.top = car.y + "px";
+        gameScreen.appendChild(carDiv);
+      }
+
+      const playerDiv = document.createElement("div");
+      playerDiv.className = "player";
+      playerDiv.textContent = player.emoji;
+      playerDiv.style.left = player.x + "px";
+      playerDiv.style.top = player.y + "px";
+      gameScreen.appendChild(playerDiv);
+    }
+
+    function updateGame() {
+      for (let car of traffic) {
+        car.x -= car.speed;
+
+        if (car.x < -60) {
+          car.x = screenWidth + 60;
+        }
+      }
+
+      function speedUpPlayer() {
+    playerSpeedLeft += 0.2;
+}
+
+function slowDownPlayer() {
+    playerSpeedLeft -= 0.2;
+
+    if (playerSpeedLeft < 0) {
+        playerSpeedLeft = 0;
+    }
+}
+
+      player.x -= playerSpeedLeft;
+
+      if (player.x < -60) {
+        player.x = screenWidth + 60;
+        message.textContent = "It's a loop tele-portal! 'Medicine Dog' Ambulance re-enters from the right.";
+      }
+    }
+
+    function gameLoop() {
+      updateGame();
+      drawGame();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+
+</body>
+</html>

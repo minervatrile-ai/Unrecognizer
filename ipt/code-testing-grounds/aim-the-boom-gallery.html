@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aim the Boom Gallery</title>
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #080808;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 24px;
+    }
+
+    .gallery {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: #151515;
+      border: 1px solid #333;
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 0 22px rgba(0, 0, 0, 0.45);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<h1>You draw four more cards...</h1>
+<body>
+
+  <main class="gallery">
+    <div class="card">
+      <img src="../aim-the-boom-1.png" alt="Aim the Boom 1">
+    </div>
+
+    <div class="card">
+      <img src="../aim-the-boom-2.png" alt="Aim the Boom 2">
+    </div>
+
+    <div class="card">
+      <a href="image-IPT-cargo-ship.html">
+      <img src="../aim-the-boom-3.png" alt="Aim the Boom 3">
+    </a>
+    <h1>clickable card...</h1>
+    </div>
+
+    <div class="card">
+      <img src="../aim-the-boom-4.png" alt="Aim the Boom 4">
+    </div>
+  </main>
+
+</body>
+</html>

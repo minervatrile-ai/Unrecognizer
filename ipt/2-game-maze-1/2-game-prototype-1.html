@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Basic Text Maze</title>
+  <style>
+    body {
+      background: black;
+      color: lime;
+      font-family: monospace;
+      text-align: center;
+    }
+
+    #maze {
+      white-space: pre;
+      font-family: monospace;
+      font-size: 40px;
+      line-height: 1.1;
+      margin: 20px;
+      overflow-x: auto;
+    }
+
+    button {
+      font-size: 20px;
+      margin: 5px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!--
+
+let's talk about  working key function...
+
+IF the "K" on the x-y grid has been visited (the same square it's on)
+THEN the "K" key emoji displays as " " (nothing)
+and ALSO THEN the "D" door emoji CEASES to BEHAVE LIKE A WALL so the player can pass through that grid tile...
+but HOW does the "D" square on the grid behave like a WALL, UNLESS: KEY's x-y position has been REACHED once, (which like said, makes the "K" invisibly display blank quote box, giving the illusion of having picked it up. Later we'll actually make it PICK UP ITEM code and PUT IN INVENTORY and a PUT ITEM DOWN type-deal...
+-->
+
+<!-- change 1: in #maze; GOAL=altering FONT SIZE to make maze zoomed bigger, VIA changing maze line-height from 24px to 1.1, adding font-family: monospace, changing font-size from 24px to 40px, leaving white-space the same (pre;) , leaving margin: 20px. also for phone screens i will try adding "overflow-x: auto;" AND there are more possible options in notepad "4-instructions-font-size.txt" in "2-game-maze" folder. 
+
+-->
+
+<h1>Text Maze Prototype</h1>
+
+<div id="maze"></div>
+
+<button onclick="movePlayer(0, -1)">⬆️ Up</button><br>
+<button onclick="movePlayer(-1, 0)">⬅️ Left</button>
+<button onclick="movePlayer(1, 0)">➡️ Right</button><br>
+<button onclick="movePlayer(0, 1)">⬇️ Down</button>
+
+<p id="message">Corner, top left, that wizard. That's you. Explore using the arrow buttons... Go read the sign post. And watch out for Zugazog Gog Magog!</p>
+
+<script>
+const maze = [
+"####################################",
+"#P   S         O#         XXX    AG#",
+"#    T         F#         XWX      #",
+"DV              #E        XXX      #",
+"#####        ####                  #",
+"#               #                  #",
+"#   I          K#                  #",
+"#               ####         #######",
+"# CB           VD                 Q#",
+"####################################"
+];
+
+let playerX = 1;
+let playerY = 1;
+
+function drawMaze() {
+  let display = "";
+
+  for (let y = 0; y < maze.length; y++) {
+    for (let x = 0; x < maze[y].length; x++) {
+      if (x === playerX && y === playerY) {
+        display += "🧙‍♂️";
+      } else {
+
+  let cell = maze[y][x];
+
+  if (cell === "#") display += "🧱";
+  else if (cell === "R") display += "📻";
+  else if (cell === "D") display += "🚪";
+
+  else if (cell === "T") display += "📺";
+  else if (cell === "S") display += "🛋️";
+  else if (cell === "B") display += "⌨️";
+  else if (cell === "C") display += "🖥️";
+  else if (cell === "L") display += "🔒";
+  else if (cell === "U") display += "🔓";
+  else if (cell === "V") display += "👹";
+  else if (cell === "F") display += "🗄️";
+  else if (cell === "O") display += "🗃️";
+  else if (cell === "W") display += "📚";
+  else if (cell === "A") display += "🎮";
+  else if (cell === "G") display += "🕹️";
+  else if (cell === "I") display += "🪧";
+
+  else if (cell === "P") display += " ";
+
+  else if (cell === "Q") {
+  if (hasCartridge) display += " ";
+  else display += "💾";
+  }
+  
+  else if (cell === "K") {
+  if (hasKey) display += " ";
+  else display += "🗝️"; 
+  }
+
+  else if (cell === "E") {
+    if (hasExtinguisher) display += " ";
+    else display += "🧯";
+  }
+
+  else if (cell === "X") {
+    if (fireOut) display += " ";
+    else display += "🔥";
+  }
+  
+  else display += cell;
+
+}
+    }
+    display += "\n";
+  }
+
+  document.getElementById("maze").textContent = display;
+}
+
+let hasKey = false
+let hasExtinguisher = false
+let fireOut = false
+let hasCartridge = false
+let cartridgeInserted = false
+
+function isNextToG() {
+  const spots = [
+    [playerX + 1, playerY],
+    [playerX - 1, playerY],
+    [playerX, playerY + 1],
+    [playerX, playerY - 1]
+  ];
+
+  return spots.some(([x, y]) => maze[y] && maze[y][x] === "G");
+}
+
+function isNextToO() {
+  const spots = [
+    [playerX + 1, playerY],
+    [playerX - 1, playerY],
+    [playerX, playerY + 1],
+    [playerX, playerY - 1]
+  ];
+
+  return spots.some(([x, y]) => maze[y] && maze[y][x] === "O");
+}
+
+function movePlayer(dx, dy) {
+  let newX = playerX + dx;
+  let newY = playerY + dy;
+
+  let nextSpace = maze[newY][newX];
+
+  if (nextSpace === "#") {
+    document.getElementById("message").textContent = "A wall is here. Are you reading the writing on the wall or what? Finding the passage through can be tricky, but it's there...";
+    return;
+  }
+
+  if (nextSpace === "D" && !hasKey) {
+  document.getElementById("message").textContent = "The door is locked...";
+return;
+}
+
+ if (nextSpace === "X" && hasExtinguisher) {
+  fireOut = true;
+  playerX = newX;
+  playerY = newY;
+  document.getElementById("message").textContent =
+    "🧯 You extinguished the fire!";
+  drawMaze();
+  return;
+}
+
+if (nextSpace === "G" && !hasCartridge) {
+  document.getElementById("message").textContent =
+    "🕹️ Insert game cartridge to play Skeleton Circus Game Console...";
+  return;
+}
+
+if (nextSpace === "G" && hasCartridge) {
+  cartridgeInserted = true;
+
+  let go = confirm("Boot up the Skeleton Circus Game Console and play The Skull Influencer cartridge?");
+
+  if (go) {
+    window.location.href = "../1-game-prototype/1-prototype-1-test.html";
+  } else {
+    document.getElementById("message").textContent =
+      "🕹️ The cartridge is inserted. The console hums quietly. Game not launched.";
+  }
+
+  return;
+}
+ 
+
+if (nextSpace === "W" && hasExtinguisher) {
+    fireOut = true;
+    playerX = newX;
+    playerY = newY;
+    document.getElementById("message").textContent =
+    "📚🧯 You saved the books! Hmm... books about authors of books about books about authors. The wisdom survives.";
+    drawMaze();
+    return;
+}
+
+  if (nextSpace === "X" && !hasExtinguisher) {
+  document.getElementById("message").textContent = "🔥 Too hot! You need the fire extinguisher.";
+  return;
+}
+
+if (nextSpace === "E") {
+  hasExtinguisher = true;
+  document.getElementById("message").textContent = "🧯 You picked up the fire extinguisher!";
+  playerX = newX;
+  playerY = newY;
+  drawMaze();
+  return;
+}
+
+if (nextSpace === "Q") {
+  hasCartridge = true;
+  document.getElementById("message").textContent = "💾 You picked up The Skull Influencer game cartridge.";
+  playerX = newX;
+  playerY = newY;
+  drawMaze();
+  return;
+}
+
+  playerX = newX;
+  playerY = newY;
+
+
+if (nextSpace === "K") {
+    hasKey = true;
+    document.getElementById("message").textContent = "ah ha, that key. duh! knew it was here. key acquired!";
+    drawMaze();
+    return;
+}
+
+if (isNextToO()) {
+  let go = confirm("This is the Catalog Conglomerate Listings file database. It's a super-index of Identity Panic Toolkit portfolio. Once there, you can just hit the Back button of your browser to return to this maze experiment.");
+  if (go) {
+    window.location.href = "../catalog-conglomerate-listings.html";
+  }
+  return;
+}
+
+  if (nextSpace === "T") {
+    document.getElementById("message").textContent = "Hey, wizard! Don't block the television set, man!";
+  } else {
+    document.getElementById("message").textContent = "wizard: i keep forgetting, what was i doing!?";
+  }
+
+if (nextSpace === "V") {
+    document.getElementById("message").textContent = "I am Zugazog Gog Magog, you guessed it. But anyway, step away from the door and get out of my face, man!";
+    return;
+  }
+
+if (nextSpace === "B") {
+    document.getElementById("message").textContent = "typing stuff in...";
+    return;
+}
+
+if (nextSpace === "C") {
+    document.getElementById("message").textContent = "computer screen search bar: pretty witches emoji pics";
+    return;
+}
+
+if (nextSpace === "I") {
+    document.getElementById("message").textContent = "check it out: there's a video game in here. a game within a game. Go to the joystick emoji to play the Skeleton Circus Game Console!";
+    return;
+}
+
+  drawMaze();
+}
+
+drawMaze();
+</script>
+
+</body>
+</html>

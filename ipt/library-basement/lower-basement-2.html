@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <style>
+body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #071015;
+      color: #f2f4f3;
+      line-height: 1.6;
+    }
+        .library-image {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  box-sizing: border-box;
+  border-radius: 14px;
+  cursor: pointer;
+}
+</style>
+<body>
+    <img src="../gallery/hellhound-asleep.png"
+alt="asleepin hellhound image"
+class="library-image"
+id="hellhoundTest">
+    <div style="text-align: center;">
+        <h1><a href="lower-basement-1.html">Go back to the breaker box...</a></h1>
+    </div>
+    <script>
+  const hellhoundTest = document.getElementById("hellhoundTest");
+
+  const hellhoundImages = [
+    "../gallery/hellhound-asleep.png" ,
+    "../gallery/hellhound-awake-hello.png" 
+    
+  ];
+
+  const hellhoundAltText = [
+    "Hellhound sleeping peacefully",
+    "Hellhound waking up and saying hello"
+  ];
+
+  let hellhoundIndex = 0;
+
+  hellhoundTest.addEventListener("click", function () {
+    hellhoundIndex++;
+
+    if (hellhoundIndex >= hellhoundImages.length) {
+      hellhoundIndex = 0;
+    }
+
+    hellhoundTest.src = hellhoundImages[hellhoundIndex];
+    hellhoundTest.alt = hellhoundAltText[hellhoundIndex];
+  });
+</script>
+</body>
+</html>

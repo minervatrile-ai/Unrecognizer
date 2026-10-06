@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>IPT Magazine Exhibit Floor</title>
+
+<style>
+
+body {
+    margin: 0;
+    padding: 30px;
+    background: #06090c;
+    color: #f2f2f2;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   MAGAZINE TITLE
+========================= */
+
+.magazine-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.magazine-header h1 {
+    font-size: 3rem;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.magazine-header p {
+    opacity: 0.7;
+    max-width: 700px;
+    margin: auto;
+}
+
+/* =========================
+   MASONRY GRID
+========================= */
+
+.exhibit-grid {
+    column-count: 4;
+    column-gap: 20px;
+}
+
+@media (max-width: 1100px) {
+    .exhibit-grid {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 800px) {
+    .exhibit-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 550px) {
+    .exhibit-grid {
+        column-count: 1;
+    }
+}
+
+/* =========================
+   CARD STYLES
+========================= */
+
+.exhibit-card {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    background: #111820;
+    border: 1px solid #22303b;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exhibit-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.exhibit-card:hover {
+    transform: translateY(-3px);
+    border-color: #7fd6d1;
+
+    box-shadow:
+        0 0 25px rgba(0,0,0,0.5),
+        0 0 10px rgba(127,214,209,0.2);
+}
+
+
+/* =========================
+   IMAGE
+========================= */
+/* =========================
+   TEXT SECTION
+========================= */
+
+.exhibit-info {
+    padding: 16px;
+}
+
+.exhibit-info h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+.exhibit-info p {
+    margin: 0;
+
+    opacity: 0.78;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* =========================
+   OPTIONAL LABELS
+========================= */
+
+.exhibit-tag {
+    display: inline-block;
+
+    margin-bottom: 12px;
+    padding: 5px 10px;
+
+    background: #1e2c36;
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    opacity: 0.75;
+}
+
+/* =========================
+   SPECIAL SIZE MODIFIERS
+========================= */
+
+.tall img {
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+}
+
+.wide img {
+    aspect-ratio: 16 / 8;
+    object-fit: cover;
+}
+
+.mega img {
+    aspect-ratio: 21 / 9;
+    object-fit: cover;
+}
+
+.square img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.micro .exhibit-info {
+    padding: 10px;
+}
+
+.micro h2 {
+    font-size: 0.9rem;
+}
+
+.micro p {
+    font-size: 0.8rem;
+}
+
+/* =========================
+   OPTIONAL WEIRDNESS
+========================= */
+
+.rotate-left {
+    transform: rotate(-1deg);
+}
+
+.rotate-right {
+    transform: rotate(1deg);
+}
+
+.rotate-left:hover,
+.rotate-right:hover {
+    transform:
+        rotate(0deg)
+        translateY(-3px);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="magazine-header">
+
+    <h1>📚 IPT MAGAZINE</h1>
+
+    <p>
+    A collection of magazine covers, visual experiments, recovered exhibits, archive fragments, and printed artifacts gathered from across the Identity Panic Toolkit project. Some pieces began as standalone concepts, others as field notes, visual studies, or one-off publications that eventually found a home on the magazine floor.
+</p><br>
+
+<p>
+    This archive remains under active construction. Exhibits may expand, relocate, be reclassified, or disappear entirely as the collection continues to evolve. Visitors are encouraged to return periodically as new issues, recovered materials, and unexpected additions emerge from the stacks.
+</p>
+    <a href="../../main-library.html" style="color: yellow;"><h3>Close Magazine and Return to Library</h3></a>
+
+</div>
+<div>
+    <img src="../../gallery/hellhound-mode.png" alt="hellhound mode 1" style="width: 100%; border-radius: 14px; margin-bottom: 30px;">
+</div>
+
+<!-- =========================
+     EXHIBIT GRID
+========================= -->
+
+<div class="exhibit-grid">
+
+<!-- =========================
+     CARD 1
+========================= -->
+
+<div class="exhibit-card tall rotate-left">
+
+    <img src="../../gallery/monster-truck-flip-green.png"
+    alt="Placeholder Exhibit">
+
+    <div class="exhibit-info">
+
+        <div class="exhibit-tag">
+            Monster Truck 
+        </div>
+
+        <h2>
+            Green Monster Truck Flipping
+        </h2>
+
+        <p>
+            Seen here, the green IPT monster truck does a flip. But the logo on the truck is already upside down, making it right side up.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     CARD 2
+========================= -->
+
+<div class="exhibit-card wide rotate-left">
+
+    <img src="../../gallery/moonshine.png"
+    alt="ipt moonshine runner">
+
+    <div class="exhibit-info">
+
+        <div class="exhibit-tag">
+            Shine
+        </div>
+
+        <h2>
+            IPT Moonshine Runner
+        </h2>
+
+        <p>
+            
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     CARD 3
+========================= -->
+
+<div class="exhibit-card square rotate-right">
+
+    <img src="../../gallery/magic-lamp.png"
+    alt="magic lamp">
+
+    <div class="exhibit-info">
+
+        <div class="exhibit-tag">
+            Genie Lamp
+        </div>
+
+        <h2>
+            IPT Magic Genie Lamp
+        </h2>
+
+        <p>
+            
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     CARD 4
+========================= -->
+
+<div class="exhibit-card micro rotate-left">
+
+    <img src="../../gallery/mental-kombat.png"
+    alt="mental kombat">
+
+    <div class="exhibit-info">
+
+        <div class="exhibit-tag">
+            Mental Kombat
+        </div>
+
+        <h2>
+            Choose Your Fighter
+        </h2>
+
+        <p>
+            You are both combatants. Your opponent is only yourself. It's an inner battle, but still, it seems, victory is possible.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     CARD 5
+========================= -->
+
+<div class="exhibit-card tall rotate-right">
+
+    <img src="../../gallery/pirate-ship.png"
+    alt="IPT pirate ship">
+
+    <div class="exhibit-info">
+
+        <div class="exhibit-tag">
+            IPT Piracy
+        </div>
+
+        <h2>
+            IPT Pirate Ship At Sea
+        </h2>
+
+        <p>
+            Set sail with a scurvy rag-tag crew of concepts, engines, mechanisms, and tactics.
+        </p>
+
+    </div>
+
+</div>
+<div class="exhibit-card wide rotate-left">
+    <img src="../../gallery/punch-bugs.png" alt="punch bugs">
+</div>
+
+<!-- =========================
+     CARD 6
+========================= -->
+
+<div class="exhibit-card square rotate-left">
+
+    <img src="../../gallery/muscle-car.png"
+    alt="muscle car">
+
+    <div class="exhibit-info">
+
+        <div class="exhibit-tag">
+            IPT Muscle Car
+        </div>
+
+        <h2>
+            Mega Turbo Engine
+        </h2>
+
+        <p>
+            
+        </p>
+
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>

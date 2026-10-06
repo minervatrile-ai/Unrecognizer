@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Identity Proxying</title>
+  <style>
+    body {
+      background: #000000;
+      color: #00ff00;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      line-height: 1.6;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: #a5ff5a;
+    }
+    a {
+      color: #a5ff5a;
+    }
+    hr {
+      border-color: #00ff00;
+      opacity: 0.3;
+    }
+
+    .tactic-index {
+  background: #050505;
+  color: #f5f5f5;
+  padding: 60px 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.tactic-card {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 40px;
+  border: 2px solid #ff1a1a;
+  background: linear-gradient(180deg, #120000, #050505);
+  box-shadow: 0 0 35px rgba(255, 0, 0, 0.35);
+}
+
+.ipt-logo {
+  display: block;
+  max-width: 180px;
+  margin: 0 auto 25px;
+  border-radius: 12px;
+}
+
+.eyebrow {
+  color: #ff3333;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.tactic-card h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  margin: 10px 0;
+}
+
+.tactic-card h2 {
+  text-align: center;
+  color: #ff5555;
+  font-weight: normal;
+  margin-bottom: 30px;
+}
+
+.intro,
+.doctrine,
+.closing,
+.graduation {
+  text-align: center;
+  line-height: 1.6;
+}
+
+.doctrine,
+.graduation {
+  color: #ff3333;
+  font-weight: bold;
+}
+
+.divider {
+  height: 2px;
+  background: #ff1a1a;
+  margin: 35px 0;
+  box-shadow: 0 0 12px #ff1a1a;
+}
+
+.tactic-list article {
+  border-left: 4px solid #ff1a1a;
+  padding: 15px 20px;
+  margin-bottom: 18px;
+  background: rgba(255, 0, 0, 0.06);
+}
+
+.tactic-list h3 {
+  margin: 0 0 8px;
+  color: #ff3b3b;
+  text-transform: uppercase;
+}
+
+.tactic-list p {
+  margin: 0;
+  line-height: 1.55;
+  color: #ddd;
+}
+
+.how-to-use h3 {
+  color: #ff3b3b;
+  text-transform: uppercase;
+}
+
+.how-to-use li {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 700px) {
+  .tactic-card {
+    padding: 25px;
+  }
+
+  .tactic-card h1 {
+    font-size: 1.8rem;
+  }
+}
+.deep-briefing {
+  background: #040404;
+  padding: 70px 20px;
+}
+
+.briefing-card {
+  max-width: 900px;
+  margin: auto;
+  background: linear-gradient(180deg, #120000, #050505);
+  border: 2px solid #ff1a1a;
+  padding: 45px;
+  color: #f2f2f2;
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.25);
+}
+
+.briefing-card h1 {
+  color: #ff2a2a;
+  text-align: center;
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.briefing-card h2 {
+  color: #ff6666;
+  text-align: center;
+  font-weight: normal;
+  margin-bottom: 40px;
+}
+
+.briefing-card p {
+  line-height: 1.8;
+  margin-bottom: 22px;
+  color: #dddddd;
+}
+
+.loop-box {
+  border: 1px solid #ff1a1a;
+  background: rgba(255, 0, 0, 0.08);
+  padding: 20px;
+  text-align: center;
+  margin: 30px 0;
+  font-size: 1.2rem;
+  color: #ff4d4d;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.warning-box {
+  margin: 35px 0;
+  padding: 25px;
+  border-left: 5px solid #ff1a1a;
+  background: rgba(255, 0, 0, 0.06);
+}
+
+.warning-box h3 {
+  color: #ff3b3b;
+  margin-top: 0;
+}
+
+.warning-box ul {
+  padding-left: 20px;
+}
+
+.warning-box li {
+  margin-bottom: 10px;
+}
+
+blockquote {
+  border-left: 4px solid #ff1a1a;
+  margin: 35px 0;
+  padding-left: 20px;
+  color: #ff5a5a;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+.closing-box {
+  margin: 40px 0;
+  padding: 30px;
+  text-align: center;
+  border: 1px solid #ff1a1a;
+  background: rgba(255, 0, 0, 0.05);
+  color: #ff4d4d;
+  font-size: 1.3rem;
+  line-height: 2;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.final-line {
+  text-align: center;
+  color: #ff2a2a;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 40px;
+}
+
+@media (max-width: 700px) {
+
+  .briefing-card {
+    padding: 25px;
+  }
+
+  .briefing-card h1 {
+    font-size: 1.7rem;
+  }
+
+  .briefing-card h2 {
+    font-size: 1rem;
+  }
+
+  .loop-box,
+  .closing-box {
+    font-size: 1rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <section class="tactic-index">
+  <div class="tactic-card">
+    <img src="red-ipt-standard-logo.jpg" alt="Identity Panic Toolkit logo" class="ipt-logo">
+
+    <p class="eyebrow">⚠️ Identity Panic Toolkit</p>
+    <nav class="tactic-nav">
+      <a href="index.html">Home</a>
+      <a href="page8.html">Index</a>
+      <a href="p8-sub1.html">1 Manufactured Outrage</a>
+      <a href="p8-sub2.html">2 Identity Storytelling</a>
+      <a href="p8-sub3.html">3 Perpetual Emergency Framing</a>
+      <a href="p8-sub4.html">4 Moral Shock Cycling</a>
+      <a href="p8-sub5.html" class="active">5 Identity Proxying</a>
+      <a href="p8-sub6.html">6 Sacred Enemy Construction</a>
+      <a href="p8-sub7.html">7 Exit Cost Inflation</a>
+      <a href="p8-sub8.html">8 Selective Silence</a>
+      <a href="p8-sub9.html">9 Threat Inflation</a>
+      <a href="p8-sub10.html">10 Outrage Without Off-Ramps</a>
+    </nav>
+    <section class="deep-briefing">
+  <div class="briefing-card">
+
+    <h1>⚠️ IDENTITY PROXYING</h1>
+    <h2>When someone else starts thinking for you</h2>
+
+    <p>
+      Identity proxying occurs when an influencer gradually speaks
+      as their audience rather than to them.
+      Phrases like:
+    </p>
+
+    <blockquote>
+      “We all know...”<br>
+      “You feel this too...”<br>
+      “Here’s what they don’t want us to realize...”
+    </blockquote>
+
+    <p>
+      Individual judgment is slowly replaced by assumed alignment.
+      The proxy claims emotional synchronization first,
+      then intellectual authority afterward.
+    </p>
+
+    <div class="loop-box">
+      emotional alignment → assumed agreement → outsourced interpretation
+    </div>
+
+    <p>
+      Over time, the audience begins to outsource interpretation itself.
+      The influencer becomes the lens through which events are understood.
+    </p>
+
+    <p>
+      This feels comforting.
+      Confusion is reduced.
+      Ambiguity is resolved quickly.
+      Thinking becomes lighter because someone else is carrying it.
+    </p>
+
+    <p>
+      Disagreement starts to feel like self-betrayal.
+      If the proxy speaks for “us,”
+      questioning them begins to feel like questioning who you are.
+    </p>
+
+    <p>
+      Identity proxying pairs naturally with perpetual emergency framing.
+      There’s no time to think,
+      so thinking is done for you.
+    </p>
+
+    <div class="warning-box">
+      <h3>⚠️ Warning Signs</h3>
+
+      <ul>
+        <li>Constant use of collective language</li>
+        <li>Emotional mirroring like “you’re furious, and you should be”</li>
+        <li>Preemptive framing of objections</li>
+        <li>Claims of special insight on behalf of the group</li>
+      </ul>
+    </div>
+
+    <blockquote>
+      “This isn’t leadership. It’s cognitive substitution.”
+    </blockquote>
+
+    <p>
+      Real guidance strengthens independent judgment.
+      Proxying weakens it while feeling like clarity.
+    </p>
+
+    <p>
+      The work isn’t to reject shared language.
+      The work is to notice when your own interpretations
+      arrive after someone else’s.
+    </p>
+
+    <div class="closing-box">
+      Pause long enough to hear your own thoughts<br>
+      before they are narrated for you.
+    </div>
+
+    <p class="final-line">
+      When your thoughts start sounding like someone else’s voice,
+      proxying has taken hold.
+    </p>
+
+  </div>
+</section>
+
+  </div>
+</section>
+</body>
+</html>

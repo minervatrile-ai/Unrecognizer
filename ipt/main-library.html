@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Main Library | Identity Panic Toolkit</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #071015;
+      color: #f2f4f3;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      background: linear-gradient(180deg, #13232b, #071015);
+      border-bottom: 1px solid #2c3e46;
+    }
+
+    .logo {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 15px auto 0;
+      color: #c9d6d3;
+      font-size: 1.05rem;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: #101d24;
+      border: 1px solid #31444d;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.25);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #8fd6c7;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #8fd6c7;
+      font-size: 1.3rem;
+    }
+
+    .card p {
+      color: #d7dfdd;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 12px;
+      color: #ffffff;
+      background: #1f6f64;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .card a:hover {
+      background: #299987;
+    }
+
+    .hidden-card {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px 50px;
+      color: #aab7b4;
+    }
+
+    footer a {
+      color: #8fd6c7;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .thumbnail-link {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.thumbnail-image {
+  width: 220px;
+  max-width: 90%;
+  border-radius: 14px;
+  border: 1px solid #31444d;
+  box-shadow: 0 0 18px rgba(0,0,0,0.35);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.thumbnail-image:hover {
+  transform: scale(1.03);
+  border-color: #8fd6c7;
+}
+
+.esteem-thumbnail {
+  content: url("gallery/book-composition-esteem-briefing.jpg");
+}
+
+.esteem-thumbnail:hover {
+  content: url("gallery/book-composition-esteem-briefing-glow.png");
+}
+  </style>
+</head>
+
+<header><p><a href="index.html" style="color: yellow;"><h1>← Back to Main Index</h1></a></p></header>
+
+<body>
+
+  <header>
+    <img src="gallery/library.png" alt="Identity Panic Toolkit Library" class="logo" />
+    <h1>Identity Panic Toolkit Main Library</h1>
+    <p class="subtitle">
+      A navigation hub for the core documents, field guides, mechanisms, recovery tools,
+      signal theory maps, and deep-field briefings of the Identity Panic Toolkit.
+    </p>
+  </header>
+  <p style="text-align:center;">
+  Tap cabinet to change style...<br>
+ [Code practice; affects nothing.]
+</p>
+<div style="text-align: center;">
+  <img 
+  id="cabinetThumbnail"
+  class="thumbnail-image"
+  src="gallery/filing-cabinet-gray.png"
+  alt="IPT filing cabinet thumbnail"
+></div>
+  <main>
+    <section class="nav-grid">
+
+      <div class="card">
+        <h2>🚨 Start Here</h2>
+        <p>Beginner-friendly orientation documents for understanding identity panic, recognition, and post-panic recovery. This filing cabinet is not even locked.</p>
+        <a href="start-here/start-here.html">Open Filing Cabinet</a>
+      </div>
+
+      <div class="card">
+        <h2>⚙️ Core Mechanisms</h2>
+        <p>The engine room: how identity panic is built, reinforced, repeated, monetized, and stabilized. This one is unlocked as well.</p>
+        <a href="core-mechanisms/core-mechanisms.html">Open Filing Cabinet</a>
+      </div>
+
+      <div class="card">
+  <h2>🎭 Identity Systems [locked]</h2>
+
+  <p>
+    Documents on self, awareness, character,
+    role assignment, role gravity, identity debt,
+    and the borrowed self. Good luck getting in there.
+  </p>
+
+  <a
+    href="#"
+    id="lockButton"
+  >
+    Pick The Lock
+  </a>
+</div>
+
+      <div class="card">
+        <h2>📡 Signal Theory [locked]</h2>
+        <p>Semiotics, memetics, pre-reaction signals, narrative gravity, symbolic systems, and language engines. It's still locked, but I think it's almost unlocked...</p>
+        <a href="#" id="signalLockButton">Pick The Lock</a>
+      </div>
+
+      <div class="card">
+        <h2>🔥 Outrage Systems</h2>
+        <p>Outrage consumerism, mob mentality, de-escalation, narrative weaponization, and emotional capture loops.</p>
+        <a href="outrage-systems/outrage-systems.html">Open Filing Cabinet</a>
+      </div>
+
+      <div class="card">
+        <h2>🧠 TMT / Parasocial Systems</h2>
+        <p>Mortality fear, influencer attachment, parasocial warfare, terror media reflexes, and identity crutches.</p>
+        <a href="parasocial-systems/parasocial-systems.html">Open Filing Cabinet</a>
+      </div>
+
+      <div class="card">
+        <h2>🌱 Assorted Remainders</h2>
+        <p>We stuffed the filing cabinets so full that some documents had to be left out. This is the box of miscellaneous papers we couldn't find a place for.</p>
+        <a href="assorted-remainders/assorted-remainders.html">Open Filing Cabinet</a>
+      </div>
+
+      <div class="card hidden-card">
+        <h2>🧰 Field Guides [construction area]</h2>
+        <p>Practical recognition and response guides, strategic calm protocols, signal identification, and social debug tools.</p>
+        <a href="field-guides/field-guides.html">Enter Section</a>
+      </div>
+
+      <div class="card">
+        <h2>🎪 Admin Only</h2>
+        <p>Top secret documents, admin tools, and the inner workings of the Identity Panic Toolkit. Only for those with the highest level of clearance.</p>
+        <a href="#" id="failedLockButton">Attempt to Access</a>
+      </div>
+
+      <div class="card hidden-card">
+        <h2>🌍 Deep Field [construction area]</h2>
+        <p>Advanced philosophical and civilization-scale documents: Global Mind Theory, cosmic operators, morale fields, and more.</p>
+        <a href="temporary-construction.html">Enter Section</a>
+      </div>
+
+      <div class="card hidden-card">
+        <h2>📚 Indexes & Maps [construction area]</h2>
+        <p>Master indexes, living language references, signal atlases, mechanism maps, and full behavioral cycle guides.</p>
+        <a href="temporary-construction.html">Enter Section</a>
+      </div>
+
+    </section>
+    <div class="thumbnail-link">
+  <a href="library/book-dandelion-memetics.html">
+    <img 
+      src="gallery/book-dandelion-memetics.jpg" 
+      alt="Dandelion Memetics Book"
+      class="thumbnail-image"
+    >
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/book-logic-skeletons.html">
+    <img
+      src="gallery/book-logic-skeletons.jpg"
+      alt="Logic Skeletons Book"
+      class="thumbnail-image"
+    >
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/the-world-builds-like-a-dream.html">
+    <img
+      src="gallery/the-world-builds-like-a-dream.png"
+      alt="The World Builds Like a Dream Book"
+      class="thumbnail-image"
+    >
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/the-signal-trilogy/0-the-signal-trilogy.html">
+    <img
+      src="gallery/book-the-signal-trilogy.png"
+      alt="The Signal Trilogy Book"
+      class="thumbnail-image"
+    >
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/esteem-briefing.html" id="flickerLink">
+    <img
+    id="esteemThumbnail"
+  src="gallery/book-composition-esteem-briefing.jpg"
+  alt="Esteem Briefing Composition Notebook image"
+  class="thumbnail-image esteem-thumbnail"
+>
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/magazine/magazine-1.html">
+    <img
+      src="gallery/MAGAZINE-IPT.jpg"
+      alt="IPT magazine"
+      class="thumbnail-image"
+      >
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/magazine/magazine-2.html">
+    <img
+      src="gallery/MAGAZINE-IPT-2-Hellhound.png"
+      alt="IPT magazine 2"
+      class="thumbnail-image"
+      >
+  </a>
+</div>
+<div class="thumbnail-link">
+  <a href="library/magazine/magazine-3.html">
+    <img
+      src="gallery/magazine-3-IPT-girl.png"
+      alt="IPT magazine 3"
+      class="thumbnail-image"
+      >
+  </a>
+</div>
+
+  </main>
+
+  <footer>
+    <p><a href="index.html"><img src="gallery/book-shelf.jpg" alt="Back to Main Index" class="thumbnail-image"><br>Back to Main Index</a></p>
+    <p><a href="library-basement/library-basement.html"><img src="gallery/library-basement.png" alt="library basement door" class="logo"></a></p>
+  </footer>
+<script>
+  const lockButton = document.getElementById("lockButton");
+
+  const sequence = [
+    "Inserting pick...",
+    "Feeling pins...",
+    "Tension wrench set...",
+    "Click...",
+    "Click click...",
+    "Unlocked."
+  ];
+
+  lockButton.addEventListener("click", function (event) {
+
+    event.preventDefault();
+
+    let step = 0;
+
+    lockButton.style.pointerEvents = "none";
+
+    const lockpick = setInterval(function () {
+
+      lockButton.textContent = sequence[step];
+
+      step++;
+
+      if (step >= sequence.length) {
+
+        clearInterval(lockpick);
+
+        setTimeout(function () {
+
+          window.location.href =
+            "identity-systems/identity-systems.html";
+
+        }, 700);
+      }
+
+    }, 700);
+
+  });
+</script>
+<script>
+  const failedLockButton = document.getElementById("failedLockButton");
+
+  const failedSequence = [
+    "Inserting pick...",
+    "Feeling pins...",
+    "Tension slipping...",
+    "Click...",
+    "SNAP.",
+    "Lockpick broke. Access denied."
+  ];
+
+  failedLockButton.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    let step = 0;
+
+    failedLockButton.style.pointerEvents = "none";
+
+    const failedLockpick = setInterval(function () {
+      failedLockButton.textContent = failedSequence[step];
+      step++;
+
+      if (step >= failedSequence.length) {
+        clearInterval(failedLockpick);
+
+        setTimeout(function () {
+          failedLockButton.textContent = "Try Again Later";
+          failedLockButton.style.pointerEvents = "auto";
+        }, 900);
+      }
+    }, 700);
+  });
+</script>
+<script>
+  const signalLockButton = document.getElementById("signalLockButton");
+
+  const signalSequence = [
+    "Inserting pick...",
+    "Feeling pins...",
+    "Tension wrench set...",
+    "Click...",
+    "Click click...",
+    "Unlocked."
+  ];
+
+  signalLockButton.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    let step = 0;
+
+    signalLockButton.style.pointerEvents = "none";
+
+    const signalLockpick = setInterval(function () {
+      signalLockButton.textContent = signalSequence[step];
+
+      step++;
+
+      if (step >= signalSequence.length) {
+        clearInterval(signalLockpick);
+
+        setTimeout(function () {
+          window.location.href = "signal-theory/signal-theory.html";
+        }, 700);
+      }
+    }, 700);
+  });
+</script>
+<script>
+  const cabinetThumbnail = document.getElementById("cabinetThumbnail");
+
+  const cabinetImages = [
+    "gallery/filing-cabinet-red-black.png",
+    "gallery/filing-cabinet-yellow-green.png",
+    "gallery/filing-cabinet-blue-pink.png",
+    "gallery/filing-cabinet-gray.png" ,
+    "gallery/filing-cabinet-black-orange-fire.png" ,
+    "gallery/filing-cabinet-paint-splatter.png" ,
+    "gallery/filing-cabinet-alien.png" ,
+    "gallery/filing-cabinet-slime-drip.png" ,
+    "gallery/filing-cabinet-sky-clouds.png" ,
+    "gallery/filing-cabinet-dynamite.png" ,
+    "gallery/filing-cabinet-aquarium.png"
+  ];
+
+  const cabinetAltText = [
+    "Red and black striped filing cabinet",
+    "Yellow and green striped filing cabinet",
+    "Blue filing cabinet with pink polka dots",
+    "Gray filing cabinet" ,
+    "Black filing cabinet with orange fire pattern" ,
+    "Filing cabinet covered in colorful paint splatter" ,
+    "Filing cabinet with alien face design" ,
+    "Filing cabinet with green slime dripping down" ,
+    "Filing cabinet with sky and clouds pattern",
+    "Filing cabinet with dynamite design" ,
+    "Filing cabinet with aquarium design, complete with fish and seaweed"
+  ];
+
+  let cabinetIndex = 2;
+
+  cabinetThumbnail.addEventListener("click", function () {
+    cabinetIndex++;
+
+    if (cabinetIndex >= cabinetImages.length) {
+      cabinetIndex = 0;
+    }
+
+    cabinetThumbnail.src = cabinetImages[cabinetIndex];
+    cabinetThumbnail.alt = cabinetAltText[cabinetIndex];
+  });
+</script>
+
+<script>
+  const flickerLink = document.getElementById("flickerLink");
+  const esteemThumbnail = document.getElementById("esteemThumbnail");
+
+  const normalImage =
+    "gallery/book-composition-esteem-briefing.jpg";
+
+  const flickerImage =
+    "gallery/book-composition-esteem-briefing-glow.png";
+
+  flickerLink.addEventListener("click", function (event) {
+
+    event.preventDefault();
+
+    let flickers = 0;
+
+    const flickerLoop = setInterval(function () {
+
+      if (flickers % 2 === 0) {
+        esteemThumbnail.src = flickerImage;
+      } else {
+        esteemThumbnail.src = normalImage;
+      }
+
+      flickers++;
+
+      if (flickers >= 8) {
+
+        clearInterval(flickerLoop);
+
+        window.location.href =
+          "library/esteem-briefing.html";
+      }
+
+    }, 80);
+
+  });
+</script>
+</body>
+</html>
