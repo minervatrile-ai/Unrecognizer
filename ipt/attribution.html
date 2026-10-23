@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Foundations & Attribution</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="https://unrecognizer.com/ipt/" class="inline-flex items-center gap-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors duration-200 group">
+                <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1"></i>
+                Back to IPT Home
+            </a>
+            <span class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Attribution & References</span>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 py-12 md:py-16 flex-grow w-full">
+        
+        <!-- Header Section -->
+        <section class="mb-12">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                Academic & Literature Base
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+                Research Foundations & Attribution
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 leading-relaxed font-light border-l-2 border-indigo-500 pl-4 py-1">
+                When we explore themes like Terror Management Theory (TMT), outrage mechanics, and identity defense, it’s important to give credit to the social psychology and media research that laid the groundwork. Here are the primary sources and foundational works behind these ideas:
+            </p>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="space-y-6">
+            
+            <!-- Category 1: TMT -->
+            <article class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 md:p-8 hover:border-slate-600 transition-all duration-300 shadow-xl shadow-black/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                        <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Foundation 01</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">1. Terror Management Theory (TMT)</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6 text-sm">
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Key Authors</span>
+                        <span class="text-slate-200 font-semibold">Sheldon Solomon, Jeff Greenberg, & Tom Pyszczynski</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Essential Read</span>
+                        <span class="text-slate-200 font-semibold italic">The Worm at the Core: On the Role of Death in Life (2015)</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 md:col-span-2">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Foundational Work</span>
+                        <span class="text-slate-200 font-semibold">Ernest Becker, <span class="italic">The Denial of Death (1973)</span></span>
+                    </div>
+                </div>
+
+                <div class="bg-purple-950/20 border border-purple-800/30 rounded-xl p-4">
+                    <h3 class="text-xs font-semibold text-purple-300 uppercase tracking-wider mb-1">Core Concept</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        How existential threat and mortality awareness trigger psychological defense mechanisms, rigid worldview defense, and intense identity protection.
+                    </p>
+                </div>
+            </article>
+
+            <!-- Category 2: Algorithmic Outrage -->
+            <article class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 md:p-8 hover:border-slate-600 transition-all duration-300 shadow-xl shadow-black/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">Foundation 02</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">2. Algorithmic Outrage & Feed Dynamics</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6 text-sm">
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Author</span>
+                        <span class="text-slate-200 font-semibold">Tobias Rose-Stockwell</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Essential Read</span>
+                        <span class="text-slate-200 font-semibold italic">Outrage Machine: How Social Media Exploits Our Innate Drive for Moral Doom (2023)</span>
+                    </div>
+                </div>
+
+                <div class="bg-amber-950/20 border border-amber-800/30 rounded-xl p-4">
+                    <h3 class="text-xs font-semibold text-amber-300 uppercase tracking-wider mb-1">Core Concept</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        How modern recommendation feeds exploit deep human threat responses to manufacture outrage and drive engagement.
+                    </p>
+                </div>
+            </article>
+
+            <!-- Category 3: Political Identity -->
+            <article class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-6 md:p-8 hover:border-slate-600 transition-all duration-300 shadow-xl shadow-black/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-semibold text-sky-400 uppercase tracking-wider">Foundation 03</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-white">3. Political Identity & Polarization</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6 text-sm">
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Author</span>
+                        <span class="text-slate-200 font-semibold">Ezra Klein</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs font-medium text-slate-400 block mb-1">Essential Read</span>
+                        <span class="text-slate-200 font-semibold italic">Why We're Polarized (2020)</span>
+                    </div>
+                </div>
+
+                <div class="bg-sky-950/20 border border-sky-800/30 rounded-xl p-4">
+                    <h3 class="text-xs font-semibold text-sky-300 uppercase tracking-wider mb-1">Core Concept</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Group identity stacking, defensive reasoning, and how moral boundary enforcement shapes public discourse.
+                    </p>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Academic Disclaimer Note -->
+        <section class="mt-12">
+            <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-5 text-slate-400 text-sm leading-relaxed flex items-start gap-3">
+                <i data-lucide="info" class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5"></i>
+                <p>
+                    <strong class="text-slate-300 font-medium">Note:</strong> All original research remains the intellectual property of the respective authors. Synthesized content shared here is provided for educational, non-commercial discussion and public exploration.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Footer -->
+    <footer class="w-full border-t border-slate-800 bg-slate-950/60 mt-12 py-8">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+                <p class="text-xs text-slate-500">Research & Attribution Directory</p>
+            </div>
+            <a href="https://unrecognizer.com/ipt/" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition-colors duration-200 shadow-lg shadow-indigo-600/20">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Back to IPT Home
+            </a>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
